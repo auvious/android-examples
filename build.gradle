@@ -1,0 +1,52 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+   }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.0'
+        
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+         // auvious
+        maven {
+            url "https://maven.auvious.com/artifactory/libs-release"
+        }
+        maven {
+            url "https://maven.auvious.com/artifactory/libs-snapshot"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    minSdkVersion = 21
+    targetSdkVersion = 24
+    compileSdkVersion = 27
+    buildToolsVersion = '27.0.3'
+    supportLibraryVersion = "27.1.1"
+
+    easypermissionsVersion = "1.1.2"
+    espressoVersion = '3.0.1'
+
+    retrofitVersion = '2.3.0'
+    okhttp3Version = "3.9.1"
+
+    rxJavaVersion = '2.1.7'
+    rxJavaAndroidVersion = '2.0.2'
+
+    constraintLayoutVersion = '1.1.2'
+    auviousVersion = '1.1.2-SNAPSHOT'
+}
