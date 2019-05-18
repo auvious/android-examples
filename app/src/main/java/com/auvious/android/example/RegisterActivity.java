@@ -1,4 +1,4 @@
-package com.test.test;
+package com.auvious.android.example;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -8,22 +8,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.auvious.authentication.data.models.AccessToken;
 import com.auvious.authentication.data.request.AuthenticationRequest;
 import com.auvious.network.Callback;
 
+import static com.auvious.android.example.Constants.UUID;
+
 public class RegisterActivity extends BaseActivity {
 
     public static final String TAG = "RegisterActivity";
-
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -31,12 +29,14 @@ public class RegisterActivity extends BaseActivity {
     private boolean allowRegister;
 
     // UI references.
+    private EditText mClientIdView;
+    private EditText mOrganizationView;
+
     private EditText mUsernameView;
     private EditText mPasswordView;
+
     private View mProgressView;
     private View mRegisterFormView;
-    private String userId;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,33 +44,24 @@ public class RegisterActivity extends BaseActivity {
 
         setContentView(R.layout.activity_register);
         // Set up the login form.
+        mClientIdView = findViewById(R.id.clientId);
+        mOrganizationView = findViewById(R.id.organization);
         mUsernameView = findViewById(R.id.username);
         mPasswordView = findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == getResources().getInteger(R.integer.loginImeActionId) || id == EditorInfo.IME_NULL) {
-                    getDemoAccessToken();
-                    return true;
-                }
-                return false;
+        mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
+            if (id == getResources().getInteger(R.integer.loginImeActionId) || id == EditorInfo.IME_NULL) {
+                getDemoAccessToken();
+                return true;
             }
+            return false;
         });
 
         Button mConnectButton = findViewById(R.id.connect_button);
-        mConnectButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDemoAccessToken();
-            }
-        });
+        mConnectButton.setOnClickListener(view -> getDemoAccessToken());
 
         mRegisterFormView = findViewById(R.id.register_form_outer);
         mProgressView = findViewById(R.id.login_progress);
 
-        allowRegister = false;
-        mUsernameView.setText(com.test.test.Constants.USERNAME);
-        mPasswordView.setText(com.test.test.Constants.PASSWORD);
         allowRegister = true;
     }
 
@@ -92,10 +83,6 @@ public class RegisterActivity extends BaseActivity {
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptConnect() {
-        attemptConnect(null);
-    }
-
     private void attemptConnect(String userId) {
         if (!allowRegister) {
             return;
@@ -112,7 +99,6 @@ public class RegisterActivity extends BaseActivity {
 
         if (!TextUtils.isEmpty(userId)) {
             username = userId;
-            this.userId = userId;
         }
 
         String password = mPasswordView.getText().toString();
@@ -147,10 +133,6 @@ public class RegisterActivity extends BaseActivity {
             Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra(HomeActivity.EXTRA_USER_ID, userId);
             startActivity(intent);
-
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            //focusApi.register(username, password, Constants.Registration.Authentication.PASSWORD);
         }
     }
 
@@ -191,40 +173,18 @@ public class RegisterActivity extends BaseActivity {
                 });
     }
 
-    /*
-    @Override
-    public void onInitialized() {
-        allowRegister = true;
-    }
-
-    @Override
-    public void onRegistered(FocusUser user) {
-        showProgress(false);
-        Intent intent = new Intent(this, HomeActivity.class);
-        intent.putExtra(HomeActivity.EXTRA_USER_ID, userId);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onRegistrationFailed(String cause) {
-        super.onRegistrationFailed(cause);
-        showProgress(false);
-        mUsernameView.setError(cause);
-        allowRegister = true;
-    }*/
-
     private void getDemoAccessToken() {
         showProgress(true);
-        getAuthenticationApi().accessToken(new AuthenticationRequest(com.test.test.Constants.USERNAME,
-                        com.test.test.Constants.PASSWORD, com.test.test.Constants.ORGANIZATION,
-                        com.test.test.Constants.UUID, com.test.test.Constants.CLIENT_ID),
+        getAuthenticationApi().accessToken(new AuthenticationRequest(mUsernameView.getText().toString(),
+                        mPasswordView.getText().toString(), mOrganizationView.getText().toString(),
+                        UUID, mClientIdView.getText().toString()),
                 new Callback<AccessToken>() {
                     @Override
                     public void onSuccess(AccessToken data) {
                         Log.d(TAG, "Authentication UserID: " + data.getUserId() + " DemoAccessToken: "
                                 + data.getAccessToken());
                         DemoAccessToken.token = data.getAccessToken();
-                        DemoAccessToken.uuid = com.test.test.Constants.UUID;
+                        DemoAccessToken.uuid = UUID;
                         DemoAccessToken.userId = data.getUserId();
                         attemptConnect(data.getUserId());
                     }

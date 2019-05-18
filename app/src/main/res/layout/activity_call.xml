@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:keepScreenOn="true"
     android:orientation="vertical"
-    tools:context="com.test.test.call.CallActivity">
+    tools:context="com.auvious.android.example.call.CallActivity">
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/surface_guest"

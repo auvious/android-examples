@@ -1,4 +1,4 @@
-package com.test.test;
+package com.auvious.android.example;
 
 import org.junit.Test;
 

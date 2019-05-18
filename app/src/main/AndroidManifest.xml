@@ -1,8 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.test.test">
+    package="com.auvious.android.example">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera2.full" />
@@ -17,7 +18,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".RegisterActivity"
+            android:name="com.auvious.android.example.RegisterActivity"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,12 +27,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name="com.auvious.android.example.HomeActivity"
             android:label="Demo"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".call.CallActivity"
+            android:name="com.auvious.android.example.call.CallActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Call"
             android:windowSoftInputMode="stateHidden" />

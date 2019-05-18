@@ -8,13 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.auvious.focus.app.RegisterActivity">
-
-    <!--debug angular demo app -->
-    <!--<com.auvious.focus.sdk.web.FocusWebApp-->
-    <!--android:id="@+id/focus_app"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"/>-->
+    tools:context="com.auvious.android.example.RegisterActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -36,6 +30,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/clientId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_clientId"
+                    android:inputType="textVisiblePassword|textNoSuggestions"
+                    android:maxLines="1"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/organization"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_organization"
+                    android:inputType="textVisiblePassword|textNoSuggestions"
+                    android:maxLines="1"/>
+
+            </android.support.design.widget.TextInputLayout>
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

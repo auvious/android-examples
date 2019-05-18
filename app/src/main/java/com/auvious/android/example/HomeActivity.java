@@ -1,4 +1,4 @@
-package com.test.test;
+package com.auvious.android.example;
 
 import android.Manifest;
 import android.content.Context;
@@ -8,14 +8,10 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.auvious.core.data.models.Schedule;
-import com.auvious.network.Callback;
-import com.test.test.call.CallActivity;
+import com.auvious.android.example.call.CallActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,7 +102,6 @@ public class HomeActivity extends BaseActivity {
 
     public void initCall(String callingId) {
         Intent intent = new Intent(HomeActivity.this, CallActivity.class);
-        intent.putExtra(CallActivity.USERNAME_EXTRA, Constants.USERNAME);
         intent.putExtra(CallActivity.USER_ID, userId);
         if (callingId != null && !callingId.isEmpty()) {
             intent.putExtra(CallActivity.CALLING_ID, callingId);

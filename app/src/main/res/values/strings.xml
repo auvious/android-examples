@@ -56,5 +56,7 @@
     <string name="button_presentation_activity_upload">Upload File</string>
     <string name="button_presentation_activity_next">Next</string>
     <string name="button_presentation_activity_previous">Previous</string>
+    <string name="prompt_clientId">Client Id (e.g. staging-meeting)</string>
+    <string name="prompt_organization">Organization (e.g. auviousteam)</string>
 
 </resources>

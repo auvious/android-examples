@@ -1,24 +1,24 @@
-package com.test.test.call;
+package com.auvious.android.example.call;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import com.auvious.call.domain.TopicListener;
 import com.auvious.call.domain.entity.Event;
 import com.auvious.call.domain.entity.StreamType;
 import com.auvious.network.Callback;
-import com.test.test.BaseActivity;
-import com.test.test.R;
+import com.auvious.android.example.BaseActivity;
+import com.auvious.android.example.R;
+
 import org.webrtc.EglBase;
 import org.webrtc.SurfaceViewRenderer;
 
@@ -34,18 +34,18 @@ import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
 public class CallActivity extends BaseActivity implements TopicListener, EasyPermissions.PermissionCallbacks {
 
     private static final String TAG = "CallActivity";
-    public static final String SCHEDULE_EXTRA = "SCHEDULE_EXTRA";
-    public static final String USERNAME_EXTRA = "USERNAME_EXTRA";
     public static final String USER_ID = "USER_ID";
     public static final String CALLING_ID = "CALLING_ID";
 
-    private String[] perms = {Manifest.permission.CAMERA};
+    private String[] perms = {
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS
+    };
     private static final int RC_RTC_PERM = 111;
 
     private String target, userId;
     private SurfaceViewRenderer localView, remoteView;
-
-    private AlertDialog currentDialog;
 
     private Button hangupBtn, answerBtn;
 
@@ -128,7 +128,6 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
 
     @Override
     public void initialized() {
-        //getCallApi().subscribeToTopic(null);
     }
 
     @Override
@@ -165,7 +164,6 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
                 Toast.makeText(this, "Waiting for answer!", Toast.LENGTH_LONG).show();
                 break;
             case ANSWERED:
-                getCallApi().addRemoteDescription(event.getSdpAnswer());
                 Completable.timer(2, TimeUnit.SECONDS)
                         .observeOn(mainThread())
                         .subscribe(
@@ -176,10 +174,6 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
             case REJECTED:
                 Toast.makeText(this, "Rejected!", Toast.LENGTH_LONG).show();
                 hangup(null);
-                break;
-            case ICECANDIDATESFOUND:
-                getCallApi().addRemoteIceCandidates(event.getIceCandidates());
-                //getCallApi().sendIceCandidates();
                 break;
             case ENDED:
                 Toast.makeText(this, "Call ended!", Toast.LENGTH_LONG).show();
@@ -199,6 +193,9 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
     }
 
     protected void call() {
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        Objects.requireNonNull(audioManager).setSpeakerphoneOn(true);
+
         getCallApi().call(this, localView, remoteView, StreamType.MIC_AND_CAM, target);
     }
 
@@ -206,17 +203,10 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
     public void onBackPressed() {
         Toast.makeText(this, "Ending call!", Toast.LENGTH_LONG).show();
         getCallApi().hangup("Back button pressed");
-        /*Completable.timer(2, TimeUnit.SECONDS)
-                .observeOn(mainThread())
-                .subscribe(() -> super.onBackPressed(), error -> Log.w(TAG, error.getMessage(), error));*/
     }
 
     public void hangup(View view) {
         Toast.makeText(this, "Call ended!", Toast.LENGTH_LONG).show();
         getCallApi().hangup("hangup button pressed");
-        /*Completable.timer(2, TimeUnit.SECONDS)
-                .observeOn(mainThread())
-                .subscribe(() -> super.onBackPressed(), error -> Log.w(TAG, error.getMessage(), error));
-*/
     }
 }
