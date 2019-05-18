@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Auvious Focus Client</string>
+    <string name="app_name">Auvious RTC Call Example</string>
 
     <!-- register -->
     <string name="title_activity_register">Register</string>

@@ -48,5 +48,5 @@ ext {
     rxJavaAndroidVersion = '2.0.2'
 
     constraintLayoutVersion = '1.1.2'
-    auviousVersion = '2.0.0'
+    auviousVersion = '2.0.1'
 }

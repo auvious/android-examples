@@ -3,6 +3,7 @@ package com.auvious.android.example;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.auvious.authentication.data.models.AccessToken;
 import com.auvious.authentication.data.request.AuthenticationRequest;
@@ -144,6 +147,16 @@ public class RegisterActivity extends BaseActivity {
         return password.length() > 0;
     }
 
+    protected void hideKeyboard() {
+        View current = getCurrentFocus();
+        if (current != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(current.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+            }
+        }
+    }
+
     /**
      * Shows the progress UI and hides the login form.
      */
@@ -174,7 +187,9 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void getDemoAccessToken() {
+        hideKeyboard();
         showProgress(true);
+
         getAuthenticationApi().accessToken(new AuthenticationRequest(mUsernameView.getText().toString(),
                         mPasswordView.getText().toString(), mOrganizationView.getText().toString(),
                         UUID, mClientIdView.getText().toString()),
@@ -191,6 +206,8 @@ public class RegisterActivity extends BaseActivity {
 
                     @Override
                     public void onError(Throwable e) {
+                        showProgress(false);
+                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         Log.e(TAG, e.getMessage());
                     }
                 });
