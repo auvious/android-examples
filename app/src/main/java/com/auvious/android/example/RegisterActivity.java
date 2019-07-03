@@ -19,9 +19,11 @@ import android.widget.Toast;
 import com.auvious.authentication.data.models.AccessToken;
 import com.auvious.authentication.data.request.AuthenticationRequest;
 import com.auvious.network.Callback;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 import static android.view.View.GONE;
-import static com.auvious.android.example.Constants.*;
 import static com.auvious.android.example.Constants.UUID;
 
 public class RegisterActivity extends BaseActivity {
@@ -71,6 +73,9 @@ public class RegisterActivity extends BaseActivity {
             mClientIdView.setVisibility(GONE);
             mOrganizationView.setVisibility(GONE);
         }
+
+        AppCenter.start(getApplication(), "01870f11-723b-4f26-8c86-6d233eb613a3",
+                Analytics.class, Crashes.class);
 
         allowRegister = true;
     }
