@@ -12,6 +12,8 @@ import android.widget.Spinner;
 
 import com.auvious.android.example.call.CallActivity;
 
+import java.util.UUID;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -38,16 +40,6 @@ public class HomeActivity extends BaseActivity {
 
     @BindView(R.id.call_username)
     EditText callTargetView;
-    @BindView(R.id.conference_create_name)
-    EditText conferenceCreateNameView;
-    @BindView(R.id.conference_mode_spinner)
-    Spinner conferenceModeSpinner;
-    @BindView(R.id.conference_join_name)
-    EditText conferenceJoinNameView;
-    @BindView(R.id.chat_join_name)
-    EditText chatName;
-    @BindView(R.id.presentation_join_name)
-    EditText presentationName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,9 +102,15 @@ public class HomeActivity extends BaseActivity {
     public void initCall(String callingId) {
         Intent intent = new Intent(HomeActivity.this, CallActivity.class);
         intent.putExtra(CallActivity.USER_ID, userId);
+        intent.putExtra(CallActivity.MSISDN, "69333221123");
+        intent.putExtra(CallActivity.EMAIL, "test@example.com");
+        intent.putExtra(CallActivity.APPSESSIONID, UUID.randomUUID().toString());
+        intent.putExtra(CallActivity.TOPIC, "OnBoarding");
+
         if (callingId != null && !callingId.isEmpty()) {
-            intent.putExtra(CallActivity.CALLING_ID, callingId);
+            intent.putExtra(CallActivity.TARGET, callingId);
         }
+
         startActivity(intent);
     }
 }

@@ -3,10 +3,10 @@ package com.auvious.android.example.call;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -14,20 +14,22 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.auvious.android.example.AppRTCAudioManager;
+import com.auvious.android.example.BaseActivity;
+import com.auvious.android.example.R;
 import com.auvious.call.domain.ProxyVideoSink;
 import com.auvious.call.domain.SharedEglBase;
 import com.auvious.call.domain.TopicListener;
 import com.auvious.call.domain.entity.Event;
 import com.auvious.call.domain.entity.StreamType;
 import com.auvious.network.Callback;
-import com.auvious.android.example.BaseActivity;
-import com.auvious.android.example.R;
+import com.google.gson.Gson;
 
-import org.webrtc.EglBase;
 import org.webrtc.Logging;
 import org.webrtc.SurfaceViewRenderer;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -40,15 +42,29 @@ import static org.webrtc.RendererCommon.ScalingType.SCALE_ASPECT_FIT;
 
 public class CallActivity extends BaseActivity implements TopicListener, EasyPermissions.PermissionCallbacks {
 
+    private static final Gson gson = new Gson();
+
     private static final String TAG = "CallActivity";
     public static final String USER_ID = "USER_ID";
-    public static final String CALLING_ID = "CALLING_ID";
+    public static final String TARGET = "TARGET";
+
+    public static final String MSISDN = "MSISDN";
+    public static final String EMAIL = "EMAIL";
+    public static final String APPSESSIONID = "APPSESSIONID";
+    public static final String TOPIC = "TOPIC";
+
+    // praxia params
+    private String msisdn;
+    private String email;
+    private String appSessionId;
+    private String topic;
 
     private String[] perms = {
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.MODIFY_AUDIO_SETTINGS
     };
+
     private static final int RC_RTC_PERM = 111;
 
     private String target, userId;
@@ -91,11 +107,16 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
 
         Intent intent = getIntent();
 
-        if (Objects.requireNonNull(intent.getExtras()).containsKey(CALLING_ID)) {
-            target = intent.getStringExtra(CALLING_ID);
+        if (Objects.requireNonNull(intent.getExtras()).containsKey(TARGET)) {
+            target = intent.getStringExtra(TARGET);
         }
 
         userId = intent.getStringExtra(USER_ID);
+
+        msisdn = intent.getStringExtra(MSISDN);
+        email = intent.getStringExtra(EMAIL);
+        appSessionId = intent.getStringExtra(APPSESSIONID);
+        topic = intent.getStringExtra(TOPIC);
 
         requestPermissions();
     }
@@ -150,10 +171,17 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
 
     private void registerUser() {
         getCallApi().setCallback(this);
-        getCallApi().register(userId, new Callback() {
+        Map<String, String> params = new LinkedHashMap<>();
+        params.put("msisdn", msisdn);
+        params.put("email", email);
+        params.put("appSessionId", appSessionId);
+        params.put("topic", topic);
+
+        String userEndpointId = Base64.encodeToString(gson.toJson(params).getBytes(), Base64.DEFAULT);
+
+        getCallApi().register(userId, userEndpointId, new Callback() {
             @Override
             public void onSuccess(Object data) {
-
             }
 
             @Override
