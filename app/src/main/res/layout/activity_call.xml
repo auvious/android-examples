@@ -17,7 +17,7 @@
         android:id="@+id/surface_user"
         android:layout_width="200dp"
         android:layout_height="300dp"
-        android:layout_gravity="bottom|right" />
+        android:layout_gravity="bottom|end" />
 
     <LinearLayout
         android:layout_width="wrap_content"

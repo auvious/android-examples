@@ -20,6 +20,8 @@ import com.auvious.authentication.data.models.AccessToken;
 import com.auvious.authentication.data.request.AuthenticationRequest;
 import com.auvious.network.Callback;
 
+import static android.view.View.GONE;
+import static com.auvious.android.example.Constants.*;
 import static com.auvious.android.example.Constants.UUID;
 
 public class RegisterActivity extends BaseActivity {
@@ -64,6 +66,11 @@ public class RegisterActivity extends BaseActivity {
 
         mRegisterFormView = findViewById(R.id.register_form_outer);
         mProgressView = findViewById(R.id.login_progress);
+
+        if (useStandardOauth2()) {
+            mClientIdView.setVisibility(GONE);
+            mOrganizationView.setVisibility(GONE);
+        }
 
         allowRegister = true;
     }
@@ -187,30 +194,62 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void getDemoAccessToken() {
-        hideKeyboard();
         showProgress(true);
+        if (useStandardOauth2()) {
+            standardOauth2Impl();
+        } else {
+            auviousLoginImpl();
+        }
+    }
 
-        getAuthenticationApi().accessToken(new AuthenticationRequest(mUsernameView.getText().toString(),
-                        mPasswordView.getText().toString(), mOrganizationView.getText().toString(),
-                        UUID, mClientIdView.getText().toString()),
-                new Callback<AccessToken>() {
-                    @Override
-                    public void onSuccess(AccessToken data) {
-                        Log.d(TAG, "Authentication UserID: " + data.getUserId() + " DemoAccessToken: "
-                                + data.getAccessToken());
-                        DemoAccessToken.token = data.getAccessToken();
-                        DemoAccessToken.uuid = UUID;
-                        DemoAccessToken.userId = data.getUserId();
-                        attemptConnect(data.getUserId());
-                    }
+    private void standardOauth2Impl() {
+        final String username = mUsernameView.getText().toString();
+        final String password = mPasswordView.getText().toString();
 
-                    @Override
-                    public void onError(Throwable e) {
-                        showProgress(false);
-                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.e(TAG, e.getMessage());
-                    }
-                });
+        getAuthenticationApi().oauth2Login(username, password, loginCallback());
+    }
+
+    private void auviousLoginImpl() {
+        final String username = mUsernameView.getText().toString();
+        final String password = mPasswordView.getText().toString();
+        final String organization = mOrganizationView.getText().toString();
+        final String clientId = mClientIdView.getText().toString();
+
+        getAuthenticationApi()
+                .auviousLogin(new AuthenticationRequest(
+                        username,
+                        password,
+                        organization,
+                        UUID,
+                        clientId
+                ), loginCallback());
+    }
+
+    private Callback<AccessToken> loginCallback() {
+        return new Callback<AccessToken>() {
+            @Override
+            public void onSuccess(AccessToken data) {
+                Log.d(TAG, "Authentication UserID: " + data.getUserId() + " DemoAccessToken: "
+                        + data.getAccessToken());
+                DemoAccessToken.token = data.getAccessToken();
+                DemoAccessToken.uuid = UUID;
+                DemoAccessToken.userId = data.getUserId();
+                attemptConnect(data.getUserId());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                showProgress(false);
+
+                Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+
+                Log.e(TAG, e.getMessage());
+            }
+        };
+    }
+
+    private boolean useStandardOauth2() {
+        return DemoApplication.getInstance().useStandardOauth2;
     }
 
 }
