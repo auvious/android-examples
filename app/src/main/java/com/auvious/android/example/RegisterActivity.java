@@ -139,7 +139,6 @@ public class RegisterActivity extends BaseActivity {
             // form field with an error.
             focusView.requestFocus();
         } else {
-            showProgress(false);
             Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra(HomeActivity.EXTRA_USER_ID, userId);
             startActivity(intent);

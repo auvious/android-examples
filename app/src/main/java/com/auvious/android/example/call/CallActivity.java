@@ -6,12 +6,16 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.auvious.android.example.AppRTCAudioManager;
+import com.auvious.call.domain.ProxyVideoSink;
+import com.auvious.call.domain.SharedEglBase;
 import com.auvious.call.domain.TopicListener;
 import com.auvious.call.domain.entity.Event;
 import com.auvious.call.domain.entity.StreamType;
@@ -20,16 +24,19 @@ import com.auvious.android.example.BaseActivity;
 import com.auvious.android.example.R;
 
 import org.webrtc.EglBase;
+import org.webrtc.Logging;
 import org.webrtc.SurfaceViewRenderer;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
+import static org.webrtc.RendererCommon.ScalingType.SCALE_ASPECT_FIT;
 
 public class CallActivity extends BaseActivity implements TopicListener, EasyPermissions.PermissionCallbacks {
 
@@ -45,9 +52,15 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
     private static final int RC_RTC_PERM = 111;
 
     private String target, userId;
-    private SurfaceViewRenderer localView, remoteView;
+    private SurfaceViewRenderer pipView, fullscreenView;
+
+    private final ProxyVideoSink remoteProxyRenderer = new ProxyVideoSink();
+    private final ProxyVideoSink localProxyVideoSink = new ProxyVideoSink();
 
     private Button hangupBtn, answerBtn;
+    @Nullable
+    private AppRTCAudioManager audioManager;
+    private boolean isSwappedFeeds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +71,23 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
 
         hangupBtn = findViewById(R.id.hangup);
         answerBtn = findViewById(R.id.answer);
-        localView = findViewById(R.id.surface_user);
-        remoteView = findViewById(R.id.surface_guest);
+        pipView = findViewById(R.id.surface_user);
+        fullscreenView = findViewById(R.id.surface_guest);
 
-        EglBase rootEglBase = EglBase.create();
+        fullscreenView.setOnClickListener(view -> swapViews(!isSwappedFeeds));
 
-        remoteView.init(rootEglBase.getEglBaseContext(), null);
-        remoteView.setZOrderMediaOverlay(true);
+        pipView.init(SharedEglBase.getEglBase().getEglBaseContext(), null);
+        pipView.setZOrderMediaOverlay(true);
+        pipView.setEnableHardwareScaler(true);
+        pipView.setScalingType(SCALE_ASPECT_FIT);
+        pipView.setZOrderOnTop(true);
 
-        localView.init(rootEglBase.getEglBaseContext(), null);
-        localView.setZOrderMediaOverlay(true);
-        localView.setMirror(true);
+        fullscreenView.init(SharedEglBase.getEglBase().getEglBaseContext(), null);
+        fullscreenView.setZOrderMediaOverlay(true);
+        fullscreenView.setEnableHardwareScaler(true);
+        fullscreenView.setScalingType(SCALE_ASPECT_FIT);
+
+        swapViews(true);
 
         Intent intent = getIntent();
 
@@ -79,6 +98,29 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
         userId = intent.getStringExtra(USER_ID);
 
         requestPermissions();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Create and audio manager that will take care of audio routing,
+        // audio modes, audio device enumeration etc.
+        audioManager = AppRTCAudioManager.create(getApplicationContext());
+        // Store existing audio settings and change audio mode to
+        // MODE_IN_COMMUNICATION for best possible VoIP performance.
+        Log.d(TAG, "Starting the audio manager...");
+        // This method will be called each time the number of available audio
+// devices has changed.
+        audioManager.start(this::onAudioManagerDevicesChanged);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (audioManager != null) {
+            audioManager.stop();
+            audioManager = null;
+        }
     }
 
     @Override
@@ -122,7 +164,7 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
     }
 
     void answer(String sdp) {
-        getCallApi().answer(this, sdp, localView, remoteView, StreamType.MIC_AND_CAM);
+        getCallApi().answer(this, sdp, pipView, fullscreenView, StreamType.MIC_AND_CAM);
         answerBtn.setVisibility(View.GONE);
     }
 
@@ -164,6 +206,8 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
                 Toast.makeText(this, "Waiting for answer!", Toast.LENGTH_LONG).show();
                 break;
             case ANSWERED:
+                swapViews(false);
+
                 Completable.timer(2, TimeUnit.SECONDS)
                         .observeOn(mainThread())
                         .subscribe(
@@ -181,6 +225,13 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
                         .observeOn(mainThread())
                         .subscribe(() -> hangup(null), error -> Log.w(TAG, error.getMessage(), error));
                 break;
+            case CONNECTION_ERROR:
+                Toast.makeText(this, "Call connection error!", Toast.LENGTH_LONG).show();
+                Completable.timer(2, TimeUnit.SECONDS)
+                        .observeOn(mainThread())
+                        .subscribe(() -> hangup(null), error -> Log.w(TAG, error.getMessage(), error));
+                break;
+
         }
     }
 
@@ -193,10 +244,7 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
     }
 
     protected void call() {
-        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        Objects.requireNonNull(audioManager).setSpeakerphoneOn(true);
-
-        getCallApi().call(this, localView, remoteView, StreamType.MIC_AND_CAM, target);
+        getCallApi().call(this, localProxyVideoSink, remoteProxyRenderer, StreamType.MIC_AND_CAM, target);
     }
 
     @Override
@@ -208,5 +256,34 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
     public void hangup(View view) {
         Toast.makeText(this, "Call ended!", Toast.LENGTH_LONG).show();
         getCallApi().hangup("hangup button pressed");
+        if (pipView != null) {
+            pipView.release();
+            pipView = null;
+        }
+
+        if (fullscreenView != null) {
+            fullscreenView.release();
+            fullscreenView = null;
+        }
     }
+
+    // This method is called when the audio manager reports audio device change,
+    // e.g. from wired headset to speakerphone.
+    private void onAudioManagerDevicesChanged(
+            final AppRTCAudioManager.AudioDevice device,
+            final Set<AppRTCAudioManager.AudioDevice> availableDevices) {
+        Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
+                + "selected: " + device);
+        // TODO(henrika): add callback handler.
+    }
+
+    private void swapViews(boolean isSwappedFeeds) {
+        Logging.d(TAG, "swapViews: " + isSwappedFeeds);
+        this.isSwappedFeeds = isSwappedFeeds;
+        localProxyVideoSink.setTarget(isSwappedFeeds ? fullscreenView : pipView);
+        remoteProxyRenderer.setTarget(isSwappedFeeds ? pipView : fullscreenView);
+        fullscreenView.setMirror(isSwappedFeeds);
+        pipView.setMirror(!isSwappedFeeds);
+    }
+
 }

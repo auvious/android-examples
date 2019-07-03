@@ -1,6 +1,5 @@
 package com.auvious.android.example;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,12 +17,21 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class HomeActivity extends BaseActivity {
 
     public static final String TAG = "HomeActivity";
     public static final String EXTRA_USER_ID = "extra_user_id";
-    String[] perms = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO};
+    String[] perms = {
+            CAMERA,
+            READ_EXTERNAL_STORAGE,
+            WRITE_EXTERNAL_STORAGE,
+            RECORD_AUDIO
+    };
     private static final int RC_RTC_PERM = 111;
 
     private String userId;
@@ -88,8 +96,8 @@ public class HomeActivity extends BaseActivity {
     }
 
     @OnClick(R.id.call)
-    public void oneOnOneSession(View view) {
-        Log.d(TAG, "oneOnOneSession: Starting Call activity");
+    public void call(View view) {
+        Log.d(TAG, "call: Starting Call activity");
         String username = callTargetView.getText().toString().trim();
         initCall(username);
         hideKeyboard();
@@ -98,7 +106,6 @@ public class HomeActivity extends BaseActivity {
     public void logout(View view) {
         Log.d(TAG, "logout: ");
     }
-
 
     public void initCall(String callingId) {
         Intent intent = new Intent(HomeActivity.this, CallActivity.class);

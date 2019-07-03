@@ -59,4 +59,8 @@
     <string name="prompt_clientId">Client Id (e.g. staging-meeting)</string>
     <string name="prompt_organization">Organization (e.g. auviousteam)</string>
 
+    <!-- preferences -->
+    <string name="pref_speakerphone_key">speakerphone-mode</string>
+    <string name="pref_speakerphone_default">auto</string>
+
 </resources>
