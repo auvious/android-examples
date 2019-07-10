@@ -72,6 +72,7 @@ public class RegisterActivity extends BaseActivity {
         if (useStandardOauth2()) {
             mClientIdView.setVisibility(GONE);
             mOrganizationView.setVisibility(GONE);
+            mPasswordView.setVisibility(GONE);
         }
 
         AppCenter.start(getApplication(), "01870f11-723b-4f26-8c86-6d233eb613a3",
@@ -208,7 +209,8 @@ public class RegisterActivity extends BaseActivity {
 
     private void standardOauth2Impl() {
         final String username = mUsernameView.getText().toString();
-        final String password = mPasswordView.getText().toString();
+        //final String password = mPasswordView.getText().toString();
+        final String password = username;
 
         getAuthenticationApi().oauth2Login(username, password, loginCallback());
     }

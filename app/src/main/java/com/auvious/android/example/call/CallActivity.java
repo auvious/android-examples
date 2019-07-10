@@ -177,9 +177,19 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
         params.put("appSessionId", appSessionId);
         params.put("topic", topic);
 
-        String userEndpointId = Base64.encodeToString(gson.toJson(params).getBytes(), Base64.DEFAULT);
+        /*String userEndpointId = Base64.encodeToString(gson.toJson(params).getBytes(), Base64.DEFAULT);
 
         getCallApi().register(userId, userEndpointId, new Callback() {
+            @Override
+            public void onSuccess(Object data) {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "Register user error: " + e);
+            }
+        });*/
+        getCallApi().register(userId, new Callback() {
             @Override
             public void onSuccess(Object data) {
             }
@@ -310,8 +320,8 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
         this.isSwappedFeeds = isSwappedFeeds;
         localProxyVideoSink.setTarget(isSwappedFeeds ? fullscreenView : pipView);
         remoteProxyRenderer.setTarget(isSwappedFeeds ? pipView : fullscreenView);
-        fullscreenView.setMirror(isSwappedFeeds);
-        pipView.setMirror(!isSwappedFeeds);
+        //fullscreenView.setMirror(isSwappedFeeds);
+        //pipView.setMirror(!isSwappedFeeds);
     }
 
 }
