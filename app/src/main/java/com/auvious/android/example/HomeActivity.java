@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.auvious.android.example.call.CallActivity;
 
@@ -102,14 +101,14 @@ public class HomeActivity extends BaseActivity {
     public void initCall(String callingId) {
         Intent intent = new Intent(HomeActivity.this, CallActivity.class);
         intent.putExtra(CallActivity.USER_ID, userId);
-        intent.putExtra(CallActivity.MSISDN, "69333221123");
-        intent.putExtra(CallActivity.EMAIL, "test@example.com");
-        intent.putExtra(CallActivity.APPSESSIONID, UUID.randomUUID().toString());
-        intent.putExtra(CallActivity.TOPIC, "OnBoarding");
-
         if (callingId != null && !callingId.isEmpty()) {
             intent.putExtra(CallActivity.TARGET, callingId);
         }
+        intent.putExtra("X-Genesys-Video_MSISDN", "6971234567");
+        intent.putExtra("X-Genesys-Video_EMAIL", "test@test.gr");
+        intent.putExtra("X-Genesys-Video_APPSESSIONID", UUID.randomUUID().toString());
+        intent.putExtra("X-Genesys-Video_TOPIC", "OnBoarding");
+        intent.putExtra(CallActivity.MIRROR_LOCAL_VIEW, false);
 
         startActivity(intent);
     }

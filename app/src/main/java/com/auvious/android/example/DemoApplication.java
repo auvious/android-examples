@@ -12,6 +12,9 @@ public class DemoApplication extends Application {
     private AuthenticationApi authenticationApi = null;
     public String baseUrl = "https://prxbauviousvideo.praxiabank.com/";
     public String mqttUri = "wss://prxbauviousvideo.praxiabank.com/ws";
+    // public String baseUrl = "https://test-rtc.auvious.com/";
+    // public String mqttUri = "wss://test-rtc.auvious.com/ws";
+
     public boolean useStandardOauth2 = true;
 
     public static DemoApplication getInstance() {

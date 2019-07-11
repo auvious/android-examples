@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -22,7 +21,6 @@ import com.auvious.call.domain.TopicListener;
 import com.auvious.call.domain.entity.Event;
 import com.auvious.call.domain.entity.StreamType;
 import com.auvious.network.Callback;
-import com.google.gson.Gson;
 
 import org.webrtc.Logging;
 import org.webrtc.SurfaceViewRenderer;
@@ -30,7 +28,6 @@ import org.webrtc.SurfaceViewRenderer;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -38,26 +35,15 @@ import io.reactivex.Completable;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static io.reactivex.android.schedulers.AndroidSchedulers.mainThread;
+import static org.webrtc.RendererCommon.ScalingType.SCALE_ASPECT_FILL;
 import static org.webrtc.RendererCommon.ScalingType.SCALE_ASPECT_FIT;
 
 public class CallActivity extends BaseActivity implements TopicListener, EasyPermissions.PermissionCallbacks {
-
-    private static final Gson gson = new Gson();
-
     private static final String TAG = "CallActivity";
+
     public static final String USER_ID = "USER_ID";
     public static final String TARGET = "TARGET";
-
-    public static final String MSISDN = "MSISDN";
-    public static final String EMAIL = "EMAIL";
-    public static final String APPSESSIONID = "APPSESSIONID";
-    public static final String TOPIC = "TOPIC";
-
-    // praxia params
-    private String msisdn;
-    private String email;
-    private String appSessionId;
-    private String topic;
+    public static final String MIRROR_LOCAL_VIEW = "MIRROR_LOCAL_VIEW";
 
     private String[] perms = {
             Manifest.permission.CAMERA,
@@ -76,6 +62,10 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
     private Button hangupBtn, answerBtn;
     @Nullable
     private AppRTCAudioManager audioManager;
+
+    private boolean mirrorLocalView;
+    private Map<String, String> sipHeaders;
+
     private boolean isSwappedFeeds;
 
     @Override
@@ -101,22 +91,25 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
         fullscreenView.init(SharedEglBase.getEglBase().getEglBaseContext(), null);
         fullscreenView.setZOrderMediaOverlay(true);
         fullscreenView.setEnableHardwareScaler(true);
-        fullscreenView.setScalingType(SCALE_ASPECT_FIT);
+        fullscreenView.setScalingType(SCALE_ASPECT_FILL);
 
         swapViews(true);
 
         Intent intent = getIntent();
 
-        if (Objects.requireNonNull(intent.getExtras()).containsKey(TARGET)) {
-            target = intent.getStringExtra(TARGET);
-        }
-
+        // get parameters
         userId = intent.getStringExtra(USER_ID);
+        target = intent.getStringExtra(TARGET);
+        mirrorLocalView = intent.getBooleanExtra(MIRROR_LOCAL_VIEW, true);
+        sipHeaders = new LinkedHashMap<>();
 
-        msisdn = intent.getStringExtra(MSISDN);
-        email = intent.getStringExtra(EMAIL);
-        appSessionId = intent.getStringExtra(APPSESSIONID);
-        topic = intent.getStringExtra(TOPIC);
+        if (intent.getExtras() != null) {
+            for (String key : intent.getExtras().keySet()) {
+                if (key.startsWith("X-Genesys-Video")) {
+                    sipHeaders.put(key, intent.getStringExtra(key));
+                }
+            }
+        }
 
         requestPermissions();
     }
@@ -171,24 +164,6 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
 
     private void registerUser() {
         getCallApi().setCallback(this);
-        Map<String, String> params = new LinkedHashMap<>();
-        params.put("msisdn", msisdn);
-        params.put("email", email);
-        params.put("appSessionId", appSessionId);
-        params.put("topic", topic);
-
-        /*String userEndpointId = Base64.encodeToString(gson.toJson(params).getBytes(), Base64.DEFAULT);
-
-        getCallApi().register(userId, userEndpointId, new Callback() {
-            @Override
-            public void onSuccess(Object data) {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, "Register user error: " + e);
-            }
-        });*/
         getCallApi().register(userId, new Callback() {
             @Override
             public void onSuccess(Object data) {
@@ -235,6 +210,11 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
     public void onMessageReceived(Event event) {
         Log.d(TAG, event.getType().toString());
         switch (event.getType()) {
+            case CAMERA_REQUEST:
+                if (event.getCameraRequestType().equalsIgnoreCase("CAMERA_SWITCH")) {
+                    swapViews(!isSwappedFeeds);
+                }
+                break;
             case CREATED:
                 Toast.makeText(this, "brrring, brrring!", Toast.LENGTH_LONG).show();
                 answerBtn.setVisibility(View.VISIBLE);
@@ -282,7 +262,13 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
     }
 
     protected void call() {
-        getCallApi().call(this, localProxyVideoSink, remoteProxyRenderer, StreamType.MIC_AND_CAM, target);
+        getCallApi().call(
+                this,
+                localProxyVideoSink,
+                remoteProxyRenderer,
+                StreamType.MIC_AND_CAM,
+                target,
+                sipHeaders);
     }
 
     @Override
@@ -320,8 +306,10 @@ public class CallActivity extends BaseActivity implements TopicListener, EasyPer
         this.isSwappedFeeds = isSwappedFeeds;
         localProxyVideoSink.setTarget(isSwappedFeeds ? fullscreenView : pipView);
         remoteProxyRenderer.setTarget(isSwappedFeeds ? pipView : fullscreenView);
-        //fullscreenView.setMirror(isSwappedFeeds);
-        //pipView.setMirror(!isSwappedFeeds);
+        if (mirrorLocalView) {
+            fullscreenView.setMirror(isSwappedFeeds);
+            pipView.setMirror(!isSwappedFeeds);
+        }
     }
 
 }
