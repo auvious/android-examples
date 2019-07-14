@@ -10,6 +10,7 @@ public class DemoApplication extends Application {
 
     private CallApi callApi = null;
     private AuthenticationApi authenticationApi = null;
+
     public String baseUrl = "https://prxbauviousvideo.praxiabank.com/";
     public String mqttUri = "wss://prxbauviousvideo.praxiabank.com/ws";
     // public String baseUrl = "https://test-rtc.auvious.com/";
