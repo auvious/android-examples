@@ -1,66 +1,10 @@
 <resources>
-    <string name="app_name">Auvious RTC Call Example</string>
+    <string name="app_name">Auvious RTC Simple Call Example</string>
 
-    <!-- register -->
-    <string name="title_activity_register">Register</string>
-    <string name="prompt_username">Username</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_register">Connect</string>
-    <string name="error_invalid_username">This username address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="title_activity_simple_call">Simple Call</string>
 
-    <!-- home -->
-    <string name="title_activity_home">Home</string>
-    <string name="call_hint">Call target</string>
-    <string name="call_btn">Call</string>
-    <string name="conference_create_hint">Create one</string>
-    <string name="conference_create_btn">Create</string>
-    <string name="action_conference_create">create</string>
-    <string name="conference_join_hint">Join to</string>
-    <string name="conference_join_btn">Join</string>
-    <string name="action_conference_join">Join</string>
-    <string name="logout_btn">Logout</string>
-
-    <!-- call -->
-    <string name="title_activity_call">Call someone</string>
-    <string name="incoming_call_title">Incoming call</string>
-    <string name="incoming_call_message">Incoming call from</string>
-    <string name="incoming_call_answer_btn">Answer</string>
-    <string name="outgoing_call_title">Outgoing call</string>
-    <string name="outgoing_call_message">Calling</string>
-    <string name="check_constraint_send_video">Send Video</string>
-    <string name="check_constraint_send_audio">Send Audio</string>
-    <string name="check_constraint_recv_video">Recv Video</string>
-    <string name="check_constraint_recv_audio">Recv Audio</string>
-    <string name="call_hangup_btn">Hangup</string>
-    <string name="call_mute_btn">Mute</string>
-    <string name="call_hold_btn">Hold</string>
-    <string name="call_unhold_btn">Unhold</string>
-
-    <!-- conference -->
-    <string name="title_activity_conference">Conference</string>
-    <string name="title_activity_chat">Chat Room</string>
-    <string name="title_activity_presentation">Presentation Room</string>
-    <string name="open_camera_btn">Open Cam</string>
-    <string name="close_camera_btn">Close Cam</string>
-    <string name="open_mic_btn">Open Mic</string>
-    <string name="close_mic_btn">Close Mic</string>
-    <string name="leave_btn">Leave</string>
-
-
-    <!-- presentation -->
-    <string name="button_presentation_activity_presenter">Become Presenter</string>
-    <string name="button_stop_activity_presenter">Stop Presentation</string>
-    <string name="button_presentation_activity_upload">Upload File</string>
-    <string name="button_presentation_activity_next">Next</string>
-    <string name="button_presentation_activity_previous">Previous</string>
-    <string name="prompt_clientId">Client Id (e.g. staging-meeting)</string>
-    <string name="prompt_organization">Organization (e.g. auviousteam)</string>
-
-    <!-- preferences -->
-    <string name="pref_speakerphone_key">speakerphone-mode</string>
-    <string name="pref_speakerphone_default">auto</string>
-
+    <string name="prompt_userId">Who will you be?</string>
+    <string name="target">Who will you call?</string>
+    <string name="call_button">Call Now!</string>
+    <string name="rtc_perms_rationale">We need access</string>
 </resources>

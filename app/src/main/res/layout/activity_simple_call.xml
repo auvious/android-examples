@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.auvious.android.example.RegisterActivity">
+    tools:context="com.auvious.android.example.SimpleCallFormActivity">
 
     <!-- Login progress -->
     <ProgressBar
@@ -20,12 +20,12 @@
         android:visibility="gone" />
 
     <ScrollView
-        android:id="@+id/register_form_outer"
+        android:id="@+id/form_outer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:id="@+id/register_inner"
+            android:id="@+id/form_inner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -35,11 +35,10 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/clientId"
+                    android:id="@+id/userId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_clientId"
-                    android:inputType="textVisiblePassword|textNoSuggestions"
+                    android:hint="@string/prompt_userId"
                     android:maxLines="1"/>
 
             </android.support.design.widget.TextInputLayout>
@@ -49,43 +48,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/organization"
+                    android:id="@+id/target"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_organization"
-                    android:inputType="textVisiblePassword|textNoSuggestions"
+                    android:hint="@string/target"
                     android:maxLines="1"/>
-
-            </android.support.design.widget.TextInputLayout>
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/username"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_username"
-                    android:inputType="textVisiblePassword|textNoSuggestions"
-                    android:maxLines="1"/>
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
-                    android:imeActionId="@integer/loginImeActionId"
-                    android:imeActionLabel="@string/action_register"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -95,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_register"
+                android:text="@string/call_button"
                 android:textStyle="bold" />
 
         </LinearLayout>
