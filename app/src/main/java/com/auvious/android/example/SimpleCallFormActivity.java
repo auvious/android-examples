@@ -12,6 +12,9 @@ import com.auvious.call.ui.AuviousSimpleCallActivity;
 import com.auvious.call.ui.AuviousSimpleCallDelegate;
 import com.auvious.call.ui.AuviousSimpleCallFactory;
 import com.auvious.call.ui.AuviousSimpleCallOptions;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,6 +38,10 @@ public class SimpleCallFormActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppCenter.start(getApplication(), "01870f11-723b-4f26-8c86-6d233eb613a3",
+                Analytics.class, Crashes.class);
+
         setContentView(R.layout.activity_simple_call);
 
         final EditText userId = findViewById(R.id.userId);
@@ -61,12 +68,23 @@ public class SimpleCallFormActivity extends Activity {
             AuviousSimpleCallDelegate delegate = new AuviousSimpleCallDelegate() {
                 @Override
                 public void onCallSuccess() {
-                    Log.d(TAG, "call successful");
+                    String msg = String.format("Call from %s to %s ended successfully",
+                            options.getUsername(),
+                            options.getTarget());
+                    Log.d(TAG, msg);
+                    Analytics.trackEvent(msg);
                 }
 
                 @Override
                 public void onCallError(AuviousCallException exception) {
-                    Log.e(TAG, String.format("call error: %s", exception.getMessage()), exception);
+                    String msg = String.format("Call from %s to %s failed: %s %s",
+                            options.getUsername(),
+                            options.getTarget(),
+                            exception.getClass().getSimpleName(),
+                            exception.getMessage());
+
+                    Log.e(TAG, msg, exception);
+                    Analytics.trackEvent(msg);
                 }
             };
 

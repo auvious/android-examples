@@ -6,3 +6,5 @@
 /captures
 .externalNativeBuild
 local.properties
+app/debug
+app/release
