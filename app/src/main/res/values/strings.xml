@@ -7,4 +7,5 @@
     <string name="target">Who will you call?</string>
     <string name="call_button">Call Now!</string>
     <string name="rtc_perms_rationale">We need access</string>
+    <string name="prompt_password">What\'s the magic word?</string>
 </resources>

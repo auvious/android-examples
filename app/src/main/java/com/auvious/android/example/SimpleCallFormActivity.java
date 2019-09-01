@@ -45,6 +45,7 @@ public class SimpleCallFormActivity extends Activity {
         setContentView(R.layout.activity_simple_call);
 
         final EditText userId = findViewById(R.id.userId);
+        final EditText password = findViewById(R.id.password);
         final EditText target = findViewById(R.id.target);
 
         findViewById(R.id.connect_button).setOnClickListener(view -> {
@@ -53,7 +54,8 @@ public class SimpleCallFormActivity extends Activity {
             options.setMqttEndpoint("wss://prxbauviousvideo.praxiabank.com/ws");
 
             options.setUsername(userId.getText().toString());
-            options.setPassword(options.getUsername());
+            options.setPassword(password.getText().toString());
+
             Map<String, String> sipHeaders = new LinkedHashMap<>();
             sipHeaders.put("X-Genesys-Video_MSISDN", options.getUsername());
             sipHeaders.put("X-Genesys-Video_EMAIL", "test@test.gr");
