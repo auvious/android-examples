@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.auvious.call.ui.AuviousCallException;
 import com.auvious.call.ui.AuviousSimpleCallActivity;
@@ -53,6 +54,9 @@ public class SimpleCallFormActivity extends Activity {
             options.setBaseEndpoint("https://test-rtc.auvious.com");
             options.setMqttEndpoint("wss://test-rtc.auvious.com/ws");
 
+            options.setBaseEndpoint("http://192.168.21.24");
+            options.setMqttEndpoint("ws://192.168.21.24/ws");
+
             options.setUsername(userId.getText().toString());
             options.setPassword(password.getText().toString());
 
@@ -75,6 +79,9 @@ public class SimpleCallFormActivity extends Activity {
                             options.getTarget());
                     Log.d(TAG, msg);
                     Analytics.trackEvent(msg);
+
+                    Toast.makeText(SimpleCallFormActivity.this, msg,
+                            Toast.LENGTH_LONG).show();
                 }
 
                 @Override
@@ -87,6 +94,9 @@ public class SimpleCallFormActivity extends Activity {
 
                     Log.e(TAG, msg, exception);
                     Analytics.trackEvent(msg);
+
+                    Toast.makeText(SimpleCallFormActivity.this, msg,
+                            Toast.LENGTH_LONG).show();
                 }
             };
 
