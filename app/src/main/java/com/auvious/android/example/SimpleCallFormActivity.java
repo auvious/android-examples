@@ -54,9 +54,6 @@ public class SimpleCallFormActivity extends Activity {
             options.setBaseEndpoint("https://test-rtc.auvious.com");
             options.setMqttEndpoint("wss://test-rtc.auvious.com/ws");
 
-            options.setBaseEndpoint("http://192.168.21.21");
-            options.setMqttEndpoint("ws://192.168.21.21/ws");
-
             options.setUsername(userId.getText().toString());
             options.setPassword(password.getText().toString());
 
