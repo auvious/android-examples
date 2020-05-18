@@ -51,8 +51,8 @@ public class SimpleCallFormActivity extends Activity {
 
         findViewById(R.id.connect_button).setOnClickListener(view -> {
             AuviousSimpleCallOptions options = new AuviousSimpleCallOptions();
-            options.setBaseEndpoint("https://test-rtc.auvious.com");
-            options.setMqttEndpoint("wss://test-rtc.auvious.com/ws");
+            options.setBaseEndpoint("https://test-rtc.stg.auvious.com");
+            options.setMqttEndpoint("wss://events.test-rtc.stg.auvious.com/ws");
 
             options.setUsername(userId.getText().toString());
             options.setPassword(password.getText().toString());
