@@ -33,7 +33,7 @@ dependencies {
     implementation "pub.devrel:easypermissions:$rootProject.easypermissionsVersion"
     implementation "com.android.support:design:$rootProject.supportLibraryVersion"
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
 
     implementation "com.auvious.android:call:$rootProject.auviousVersion"
     implementation "com.auvious.android:authentication:$rootProject.auviousVersion"
