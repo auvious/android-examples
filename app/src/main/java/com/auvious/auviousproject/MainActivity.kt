@@ -13,8 +13,6 @@ import com.auvious.auvioussdk.ui.simpleconference.AuviousSimpleConferenceOptions
 import com.auvious.auvioussdk.ui.simpleconference.AuviousSimpleConferenceActivity
 import com.auvious.auvioussdk.ui.simpleconference.AuviousSdkSimpleConferenceError
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.edit_password
-import kotlinx.android.synthetic.main.activity_main.edit_username
 
 /**
  * Created by BKarampinis on 13-Jul-20
@@ -35,8 +33,8 @@ class MainActivity: AppCompatActivity() {
          * AuviousSimpleConferenceActivity example
          * */
         button_conference.setOnClickListener {
-            if(edit_username.text.isNullOrEmpty() || edit_password.text.isNullOrEmpty()){
-                Toast.makeText(this, "Please fill up fields in order to continue", Toast.LENGTH_SHORT).show()
+            if(edit_ticket.text.isNullOrEmpty()){
+                Toast.makeText(this, "Please supply a valid ticket id to continue", Toast.LENGTH_SHORT).show()
             }else if(!permissionConfirmed()){
                 Toast.makeText(this, "Please give needed permissions to application first", Toast.LENGTH_SHORT).show()
             }else{
@@ -47,14 +45,12 @@ class MainActivity: AppCompatActivity() {
     }
 
     private fun startSimpleConferenceActivity(){
-        val clientId = "clientId"
-        val baseEndpoint = "baseEndpoint/"
-        val mqttEndpoint = "mqttEndpoint/"
+        val clientId = "customer"
+        val baseEndpoint = "https://auvious.video"
+        val mqttEndpoint = "wss://auvious.video/ws"
         val params = mapOf(
-            "username" to edit_username.text.toString(),
-            "password" to edit_password.text.toString(),
-            "grant_type" to "password",
-            "conference" to edit_conference_target.text.toString()
+            "ticket" to edit_ticket.text.toString(),
+            "grant_type" to "password"
         )
 
         val callOptions = AuviousSimpleConferenceOptions(

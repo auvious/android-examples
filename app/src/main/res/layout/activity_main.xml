@@ -31,42 +31,18 @@
             android:background="#614600" />
 
         <EditText
-            android:id="@+id/edit_username"
+            android:id="@+id/edit_ticket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username"
-            android:inputType="textVisiblePassword|textNoSuggestions"
+            android:hint="Ticket"
+            android:inputType="textNoSuggestions"
             android:maxLines="1" />
-
-        <EditText
-            android:id="@+id/edit_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:singleLine="true" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="AuviousSimpleConferenceActivity:"
-            android:textColor="#614600" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_marginBottom="10dp"
             android:background="#614600" />
-
-        <EditText
-            android:id="@+id/edit_conference_target"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Conference Target"
-            android:maxLines="1"
-            android:singleLine="true" />
 
         <Button
             android:id="@+id/button_conference"
@@ -75,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="16dp"
-            android:text="Join Conference"
+            android:text="Join Video Room"
             android:textAllCaps="false" />
 
     </LinearLayout>
