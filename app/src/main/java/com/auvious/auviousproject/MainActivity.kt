@@ -14,6 +14,10 @@ import com.auvious.auvioussdk.ui.simpleconference.AuviousSimpleConferenceActivit
 import com.auvious.auvioussdk.ui.simpleconference.AuviousSdkSimpleConferenceError
 import kotlinx.android.synthetic.main.activity_main.*
 
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
+
 /**
  * Created by BKarampinis on 13-Jul-20
  */
@@ -25,6 +29,11 @@ class MainActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupViews()
+        // app-center
+        AppCenter.start(
+            application, "f1c0fdfc-612a-40c1-ab66-8cb5a8cfd722",
+            Analytics::class.java, Crashes::class.java
+        )
     }
 
     private fun setupViews(){
