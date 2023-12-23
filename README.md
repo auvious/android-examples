@@ -12,14 +12,14 @@ To use AuviousSDK in your project follow these steps:
         maven { url "https://nexus.auvious.com/repository/maven-releases" }
     }
   ```
-- Include `com.auvious.android:sdk:1.0.7` dependency. Again if you are using Gradle, then your
+- Include `com.auvious.android:sdk:1.0.9` dependency. Again if you are using Gradle, then your
   build.gradle dependencies section would look like this:
   ```groovy
   dependencies {
     //... other dependencies
   
     // Auvious SDK
-    implementation 'com.auvious.android:sdk:1.0.7'
+    implementation 'com.auvious.android:sdk:1.0.9'
   }
   ```
 
@@ -31,7 +31,9 @@ To use AuviousSDK in your project follow these steps:
       "wss://auvious.video/ws",
       mapOf(
           "ticket" to edit_ticket.text.toString(),
-          "grant_type" to "password"
+          "grant_type" to "password",
+          "mic" to "true",
+          "camera" to "true"
       )
   )
   

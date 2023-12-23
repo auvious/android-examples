@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+<!-- Base application theme. -->
+    <style name="Theme.AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/auvious_blue</item>
+        <item name="colorPrimaryDark">@color/auvious_blue</item>
+        <item name="colorAccent">@color/auvious_blue</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+    </style>
+
+</resources>

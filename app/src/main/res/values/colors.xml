@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#464646</color>
+    <color name="auvious_blue">#173666</color>
+    <color name="auvious_blue_light">#3366ff</color>
+    <color name="grey">#464646</color>
     <color name="colorAccent">#070002</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
 </resources>
