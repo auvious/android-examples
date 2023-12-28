@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
                 result.data?.parcelable<AuviousSdkSimpleConferenceError>(
                     AuviousSimpleConferenceActivity.getResultIntentName()
                 )?.let {
-                    Toast.makeText(baseContext, "Error code is ${it.errorCode}", Toast.LENGTH_LONG)
+                    Toast.makeText(baseContext, "Exit with code: ${it.errorCode}", Toast.LENGTH_LONG)
                         .show()
                 }
             }

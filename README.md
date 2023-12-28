@@ -19,7 +19,7 @@ To use AuviousSDK in your project follow these steps:
     //... other dependencies
   
     // Auvious SDK
-    implementation 'com.auvious.android:sdk:1.0.9'
+    implementation 'com.auvious.android:sdk:1.0.10'
   }
   ```
 
