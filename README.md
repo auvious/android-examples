@@ -12,7 +12,7 @@ To use AuviousSDK in your project follow these steps:
         maven { url "https://nexus.auvious.com/repository/maven-releases" }
     }
   ```
-- Include `com.auvious.android:sdk:1.0.9` dependency. Again if you are using Gradle, then your
+- Include `com.auvious.android:sdk:1.0.12` dependency. Again if you are using Gradle, then your
   build.gradle dependencies section would look like this:
   ```groovy
   dependencies {
