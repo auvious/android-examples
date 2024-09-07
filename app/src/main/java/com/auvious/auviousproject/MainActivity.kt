@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this,
                 permissions,
-                Random.nextInt()
+                Random.nextInt(100, 999)
             )
         }
     }
