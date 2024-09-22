@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         val callOptions = AuviousSimpleConferenceOptions(
             "customer",
             "https://dev.auvious.video",
-            "wss://events.dev.auvious.video/ws",
+            "wss://dev.auvious.video/ws",
             mapOf(
                 "ticket" to binding.ticketText.text.toString(),
                 "grant_type" to "password",
