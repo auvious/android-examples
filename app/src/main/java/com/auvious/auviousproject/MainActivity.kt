@@ -74,25 +74,29 @@ class MainActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                startSimpleConferenceActivity(enableCam = !binding.micOnlySwitch.isChecked)
+                startSimpleConferenceActivity(
+                    enableCam = !binding.micOnlySwitch.isChecked,
+                    enableSpeaker = binding.speakerSwitch.isChecked,
+                )
             }
         }
 
     }
     private fun startSimpleConferenceActivity(
         enableMic: Boolean = true,
-        enableCam: Boolean = true
+        enableCam: Boolean = true,
+        enableSpeaker: Boolean = true
     ) {
         val callOptions = AuviousSimpleConferenceOptions(
             "customer",
-            "https://dev.auvious.video",
-            "wss://dev.auvious.video/ws",
+            "https://auvious.video",
+            "wss://auvious.video/ws",
             mapOf(
                 "ticket" to binding.ticketText.text.toString(),
                 "grant_type" to "password",
                 AuviousSimpleConferenceOptions.microphoneOption to enableMic.toString(),
-                AuviousSimpleConferenceOptions.cameraOption to enableCam.toString()
-
+                AuviousSimpleConferenceOptions.cameraOption to enableCam.toString(),
+                AuviousSimpleConferenceOptions.speakerOption to enableSpeaker.toString()
             )
         )
         activityForResult.launch(AuviousSimpleConferenceActivity.getIntent(this, callOptions))
