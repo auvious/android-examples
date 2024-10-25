@@ -3,11 +3,10 @@ package com.auvious.auviousproject
 import android.Manifest
 import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,6 +25,9 @@ import com.microsoft.appcenter.analytics.Analytics
 import com.microsoft.appcenter.crashes.Crashes
 import kotlin.random.Random
 
+/**
+ * Created by BKarampinis on 13-Jul-20
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -60,6 +62,9 @@ class MainActivity : AppCompatActivity() {
         binding.requestCameraPerm.setOnClickListener { checkForCameraStoragePermission() }
         binding.requestMicPerm.setOnClickListener { checkForAudioRecordPermission() }
         binding.requestStoragePerm.setOnClickListener { checkForWriteStoragePermission() }
+        /**
+         * AuviousSimpleConferenceActivity example
+         * */
         binding.joinCall.setOnClickListener {
             if (binding.ticketText.text.isNullOrEmpty()) {
                 Toast.makeText(
@@ -76,17 +81,25 @@ class MainActivity : AppCompatActivity() {
             } else {
                 startSimpleConferenceActivity(
                     enableCam = !binding.micOnlySwitch.isChecked,
-                    enableSpeaker = binding.speakerSwitch.isChecked,
+                    enableEarPieceSpeaker = binding.speakerSwitch.isChecked,
+                    availableCamButton = binding.cameraAvailableSwitch.isChecked,
+                    availableMicButton = binding.micAvailableSwitch.isChecked,
+                    availableSpeakerButton = binding.speakerAvailableSwitch.isChecked,
+                    customConferenceBackgroundColor = binding.conferenceBackgroundSwitch.isChecked
                 )
             }
         }
-
     }
     private fun startSimpleConferenceActivity(
         enableMic: Boolean = true,
         enableCam: Boolean = true,
-        enableSpeaker: Boolean = true
+        enableEarPieceSpeaker: Boolean = false,
+        availableMicButton: Boolean = true,
+        availableCamButton: Boolean = true,
+        availableSpeakerButton: Boolean = true,
+        customConferenceBackgroundColor: Boolean = false
     ) {
+
         val callOptions = AuviousSimpleConferenceOptions(
             "customer",
             "https://auvious.video",
@@ -94,9 +107,13 @@ class MainActivity : AppCompatActivity() {
             mapOf(
                 "ticket" to binding.ticketText.text.toString(),
                 "grant_type" to "password",
+                AuviousSimpleConferenceOptions.speakerOption to (!enableEarPieceSpeaker).toString(),
                 AuviousSimpleConferenceOptions.microphoneOption to enableMic.toString(),
                 AuviousSimpleConferenceOptions.cameraOption to enableCam.toString(),
-                AuviousSimpleConferenceOptions.speakerOption to enableSpeaker.toString()
+                AuviousSimpleConferenceOptions.cameraAvailable to availableCamButton.toString(),
+                AuviousSimpleConferenceOptions.microphoneAvailable to availableMicButton.toString(),
+                AuviousSimpleConferenceOptions.speakerAvailable to availableSpeakerButton.toString(),
+                AuviousSimpleConferenceOptions.conferenceBackgroundColor to if (customConferenceBackgroundColor) Color.parseColor("#3366ff").toString() else Color.BLACK.toString()
             )
         )
         activityForResult.launch(AuviousSimpleConferenceActivity.getIntent(this, callOptions))
@@ -161,14 +178,4 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, it) == PERMISSION_GRANTED
         }
     }
-}
-
-inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
-    Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
-    else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
-}
-
-inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
-    Build.VERSION.SDK_INT >= 33 -> getParcelable(key, T::class.java)
-    else -> @Suppress("DEPRECATION") getParcelable(key) as? T
 }

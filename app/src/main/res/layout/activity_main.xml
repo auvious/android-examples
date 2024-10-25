@@ -12,12 +12,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/auvious_logo"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.20"
         app:tint="?android:colorPrimary" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -94,7 +93,7 @@
         style="@style/TextAppearance.AppCompat.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Audio to Speaker"
+        android:text="Use earpiece speaker"
         app:layout_constraintBottom_toBottomOf="@+id/speaker_switch"
         app:layout_constraintEnd_toStartOf="@id/speaker_switch"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -112,20 +111,120 @@
         app:layout_constraintTop_toBottomOf="@id/mic_only_switch" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/perm_title"
+        android:id="@+id/controls_title"
         style="@style/TextAppearance.AppCompat.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="Permission options"
+        android:layout_marginTop="16dp"
+        android:text="Conference control"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/speaker_switch" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/camera_available_title"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Camera Buttons"
+        app:layout_constraintBottom_toBottomOf="@+id/camera_available_switch"
+        app:layout_constraintEnd_toStartOf="@id/camera_available_switch"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/camera_available_switch"
+        app:layout_constraintTop_toTopOf="@id/camera_available_switch" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/camera_available_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/camera_available_title"
+        app:layout_constraintTop_toBottomOf="@id/controls_title" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/mic_available_title"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Microphone Button"
+        app:layout_constraintBottom_toBottomOf="@+id/mic_available_switch"
+        app:layout_constraintEnd_toStartOf="@id/mic_available_switch"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mic_available_switch"
+        app:layout_constraintTop_toTopOf="@id/mic_available_switch" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/mic_available_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/mic_available_title"
+        app:layout_constraintTop_toBottomOf="@id/camera_available_switch" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/speaker_available_title"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Speaker Button"
+        app:layout_constraintBottom_toBottomOf="@+id/speaker_available_switch"
+        app:layout_constraintEnd_toStartOf="@id/speaker_available_switch"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/speaker_available_switch"
+        app:layout_constraintTop_toTopOf="@id/speaker_available_switch" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/speaker_available_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/speaker_available_title"
+        app:layout_constraintTop_toBottomOf="@id/mic_available_switch" />
+
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/conference_background_title"
+        style="@style/TextAppearance.AppCompat.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Custom Conference Background"
+        app:layout_constraintBottom_toBottomOf="@+id/conference_background_switch"
+        app:layout_constraintEnd_toStartOf="@id/conference_background_switch"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/conference_background_switch"
+        app:layout_constraintTop_toTopOf="@id/conference_background_switch" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/conference_background_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/conference_background_title"
+        app:layout_constraintTop_toBottomOf="@id/speaker_available_switch" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/perm_title"
+        style="@style/TextAppearance.AppCompat.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Permission options"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/conference_background_switch" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/request_camera_perm"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:text="Camera"
         app:layout_constraintEnd_toStartOf="@id/request_mic_perm"
@@ -135,7 +234,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/request_mic_perm"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:text="Microphone"
         app:layout_constraintEnd_toEndOf="@id/request_storage_perm"
@@ -145,7 +244,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/request_storage_perm"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginTop="8dp"
         android:text="Storage"
         app:layout_constraintEnd_toEndOf="parent"

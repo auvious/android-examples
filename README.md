@@ -1,75 +1,108 @@
 # Auvious Android SDK Example
-This repo contains example of how to use AuviousSDK.
+This repository contains an example of how to use the AuviousSDK in an Android project.
 
-To use AuviousSDK in your project follow these steps:
-- Add `https://nexus.auvious.com/repository/maven-releases` nexus repository. If you are using gradle
-  then your build.gradle repositories section should look something like this:
-  ```groovy
-      repositories {
-        mavenCentral()
-        // ... other repositories
-        // Auvious SDK Repo
-        maven { url "https://nexus.auvious.com/repository/maven-releases" }
-    }
-  ```
-- Include `com.auvious.android:sdk:1.0.15` dependency. Again if you are using Gradle, then your
-  build.gradle dependencies section would look like this:
-  ```groovy
-  dependencies {
-    //... other dependencies
-  
-    // Auvious SDK
-    implementation 'com.auvious.android:sdk:1.0.15'
-  }
-  ```
+To use the AuviousSDK in your project, follow these steps:
 
-- Launch `AuviousSimpleConferenceActivity` to join a call with ticket like this:
-  ```kotlin
-  val callOptions = AuviousSimpleConferenceOptions(
-      "customer",
-      "https://auvious.video",
-      "wss://auvious.video/ws",
-      mapOf(
-          "ticket" to edit_ticket.text.toString(),
-          "grant_type" to "password",
-          "mic" to "true",
-          "camera" to "true",
-          "speaker" to "false"
-      )
-  )
-  
-  val startForResult =
-      registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-      { result: ActivityResult ->
-          if (result.resultCode != Activity.RESULT_OK) {
-              //  you will get result here in result.data
-              result.data?.getParcelableExtra<AuviousSdkSimpleConferenceError>(
-                  AuviousSimpleConferenceActivity.getResultIntentName()
-              )?.let {
-                  Toast.makeText(this, "Error code is ${it.errorCode}", Toast.LENGTH_LONG)
-                      .show()
-              }
-          }
-          AuviousConferenceSDK.instance.onDestroy()
-      }
-  startForResult.launch(AuviousSimpleConferenceActivity.getIntent(this, callOptions))
-  ```
-Within the `mapOf()` configuration, there are three options for initializing the microphone, camera, and speaker for the call session. Here's how they work and how to adjust them:
+## Setup Instructions
 
-**Microphone Configuration**
-- Key: `mic`
-- Value: `true` or `false`
-  - `true`: This enables the microphone, allowing the user to send audio during the call.
-  - `false`: This disables the microphone, so the user will not be able to send audio. However, they can still hear audio if the speaker is enabled.
+1. Add `https://nexus.auvious.com/repository/maven-releases` as a Nexus repository. If you're using Gradle, add this to your `build.gradle` repositories section:
+   ```groovy
+   repositories {
+       mavenCentral()
+       // ... other repositories
+       // Auvious SDK Repo
+       maven { url "https://nexus.auvious.com/repository/maven-releases" }
+   }
+   ```
 
-**Camera Configuration**
-- Key: `camera`
-- Value: `true` or `false`
-  - `true`: This enables the camera, allowing the user to send video during the call.
-  - `false`: This disables the camera, so the user will not send video. However, they can still see the video from other participants.
+2. Include the Auvious SDK dependency. Add this line to your `build.gradle` dependencies section:
+   ```groovy
+   dependencies {
+       //... other dependencies
+       // Auvious SDK
+       implementation 'com.auvious.android:sdk:1.1.1'
+   }
+   ```
 
-**Speaker Configuration**
-- Key: `speaker`
-- Value: `true` or `false`
-- `true`: This enables the speaker, allowing the user to hear audio from other participants.
-- `false`: This disables the speaker, so the user will hear sound by device's earpiece.
+## Usage Example
+
+To start a conference, use the `AuviousSimpleConferenceActivity` with configurable call options, such as microphone, camera, and speaker settings:
+
+```kotlin
+private fun startSimpleConferenceActivity(
+    enableMic: Boolean = true,
+    enableCam: Boolean = true,
+    enableEarPieceSpeaker: Boolean = false,
+    availableMicButton: Boolean = true,
+    availableCamButton: Boolean = true,
+    availableSpeakerButton: Boolean = true,
+    customConferenceBackgroundColor: Boolean = false
+) {
+    val callOptions = AuviousSimpleConferenceOptions(
+        "customer",
+        "https://auvious.video",
+        "wss://auvious.video/ws",
+        mapOf(
+            "ticket" to binding.ticketText.text.toString(),
+            "grant_type" to "password",
+            AuviousSimpleConferenceOptions.speakerOption to (!enableEarPieceSpeaker).toString(),
+            AuviousSimpleConferenceOptions.microphoneOption to enableMic.toString(),
+            AuviousSimpleConferenceOptions.cameraOption to enableCam.toString(),
+            AuviousSimpleConferenceOptions.cameraAvailable to availableCamButton.toString(),
+            AuviousSimpleConferenceOptions.microphoneAvailable to availableMicButton.toString(),
+            AuviousSimpleConferenceOptions.speakerAvailable to availableSpeakerButton.toString(),
+            AuviousSimpleConferenceOptions.conferenceBackgroundColor to if (customConferenceBackgroundColor) Color.parseColor("#3366ff").toString() else Color.BLACK.toString()
+        )
+    )
+    activityForResult.launch(AuviousSimpleConferenceActivity.getIntent(this, callOptions))
+}
+```
+
+### Option Descriptions
+
+#### Enable default functionality
+- **Microphone Configuration**
+  - **Key**: `mic`
+  - **Value**: `true` or `false`
+    - `true`: Enables the microphone.
+    - `false`: Disables the microphone.
+
+- **Camera Configuration**
+  - **Key**: `camera`
+  - **Value**: `true` or `false`
+    - `true`: Enables the camera.
+    - `false`: Disables the camera.
+
+- **Speaker Configuration**
+  - **Key**: `speaker`
+  - **Value**: `true` or `false`
+    - `true`: Enables the speaker.
+    - `false`: Enables only the earpiece.
+
+#### Available conference control buttons
+  - **Microphone Button Availability**
+    - **Key**: `mic_available`
+    - **Value**: `true` or `false`
+      - `true`: The microphone button will be available for toggling on/off.
+      - `false`: The microphone button will be hidden.
+
+  - **Camera Button Availability**
+    - **Key**: `camera_available`
+    - **Value**: `true` or `false`
+      - `true`: The camera button will be available for toggling on/off.
+      - `false`: The camera button will be hidden.
+
+  - **Speaker Button Availability**
+    - **Key**: `speaker_available`
+    - **Value**: `true` or `false`
+      - `true`: The speaker button will be available for toggling on/off.
+      - `false`: The speaker button will be hidden.
+
+- **Custom Conference Background Color**
+  - **Key**: `conference_background_color`
+  - **Value**: [Color](https://developer.android.com/reference/android/graphics/Color) object or a hex color by using the [Color.parseColor()](https://developer.android.com/reference/android/graphics/Color#parseColor(java.lang.String)) method
+    - Set a custom color in conference background. Otherwise, the default background color will be black.
+
+---
+
+With these additional configurations, you have greater control over the UI and functionality within the [Auvious](www.auvious.com) conference experience, allowing you to fine-tune the behavior and appearance for your users.
