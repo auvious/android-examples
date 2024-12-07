@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
         binding.requestCameraPerm.setOnClickListener { checkForCameraStoragePermission() }
         binding.requestMicPerm.setOnClickListener { checkForAudioRecordPermission() }
         binding.requestStoragePerm.setOnClickListener { checkForWriteStoragePermission() }
+        binding.sdkVersion.text = "SDK v${getString(com.auvious.auvioussdk.R.string.version_name)}"
         /**
          * AuviousSimpleConferenceActivity example
          * */

@@ -20,7 +20,7 @@ To use the AuviousSDK in your project, follow these steps:
    dependencies {
        //... other dependencies
        // Auvious SDK
-       implementation 'com.auvious.android:sdk:1.1.2'
+       implementation 'com.auvious.android:sdk:1.1.3'
    }
    ```
 
@@ -62,46 +62,46 @@ private fun startSimpleConferenceActivity(
 
 #### Enable default functionality
 - **Microphone Configuration**
-  - **Key**: `mic`
-  - **Value**: `true` or `false`
-    - `true`: Enables the microphone.
-    - `false`: Disables the microphone.
+    - **Key**: `mic`
+    - **Value**: `true` or `false`
+        - `true`: Enables the microphone.
+        - `false`: Disables the microphone.
 
 - **Camera Configuration**
-  - **Key**: `camera`
-  - **Value**: `true` or `false`
-    - `true`: Enables the camera.
-    - `false`: Disables the camera.
+    - **Key**: `camera`
+    - **Value**: `true` or `false`
+        - `true`: Enables the camera.
+        - `false`: Disables the camera.
 
 - **Speaker Configuration**
-  - **Key**: `speaker`
-  - **Value**: `true` or `false`
-    - `true`: Enables the speaker.
-    - `false`: Enables only the earpiece.
+    - **Key**: `speaker`
+    - **Value**: `true` or `false`
+        - `true`: Enables the speaker.
+        - `false`: Enables only the earpiece.
 
 #### Available conference control buttons
-  - **Microphone Button Availability**
+- **Microphone Button Availability**
     - **Key**: `mic_available`
     - **Value**: `true` or `false`
-      - `true`: The microphone button will be available for toggling on/off.
-      - `false`: The microphone button will be hidden.
+        - `true`: The microphone button will be available for toggling on/off.
+        - `false`: The microphone button will be hidden.
 
-  - **Camera Button Availability**
+- **Camera Button Availability**
     - **Key**: `camera_available`
     - **Value**: `true` or `false`
-      - `true`: The camera button will be available for toggling on/off.
-      - `false`: The camera button will be hidden.
+        - `true`: The camera button will be available for toggling on/off.
+        - `false`: The camera button will be hidden.
 
-  - **Speaker Button Availability**
+- **Speaker Button Availability**
     - **Key**: `speaker_available`
     - **Value**: `true` or `false`
-      - `true`: The speaker button will be available for toggling on/off.
-      - `false`: The speaker button will be hidden.
+        - `true`: The speaker button will be available for toggling on/off.
+        - `false`: The speaker button will be hidden.
 
 - **Custom Conference Background Color**
-  - **Key**: `conference_background_color`
-  - **Value**: [Color](https://developer.android.com/reference/android/graphics/Color) object or a hex color by using the [Color.parseColor()](https://developer.android.com/reference/android/graphics/Color#parseColor(java.lang.String)) method
-    - Set a custom color in conference background. Otherwise, the default background color will be black.
+    - **Key**: `conference_background_color`
+    - **Value**: [Color](https://developer.android.com/reference/android/graphics/Color) object or a hex color by using the [Color.parseColor()](https://developer.android.com/reference/android/graphics/Color#parseColor(java.lang.String)) method
+        - Set a custom color in conference background. Otherwise, the default background color will be black.
 
 ---
 
