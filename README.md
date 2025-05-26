@@ -5,7 +5,16 @@ To use the AuviousSDK in your project, follow these steps:
 
 ## Setup Instructions
 
-1. Add `https://nexus.auvious.com/repository/maven-releases` as a Nexus repository. If you're using Gradle, add this to your `build.gradle` repositories section:
+1. The Auvious Android SDK is built using Java 17 and requires your Android project to be configured to use Java 17 for compilation.
+
+   Please ensure your module-level `build.gradle` (or `build.gradle.kts`) file includes the following settings:
+   ```groovy
+   kotlin {
+    jvmToolchain(17)
+    }
+    ```
+
+2. Add `https://nexus.auvious.com/repository/maven-releases` as a Nexus repository. If you're using Gradle, add this to your `build.gradle` repositories section:
    ```groovy
    repositories {
        mavenCentral()
@@ -15,12 +24,12 @@ To use the AuviousSDK in your project, follow these steps:
    }
    ```
 
-2. Include the Auvious SDK dependency. Add this line to your `build.gradle` dependencies section:
+3. Include the Auvious SDK dependency. Add this line to your `build.gradle` dependencies section:
    ```groovy
    dependencies {
        //... other dependencies
        // Auvious SDK
-       implementation 'com.auvious.android:sdk:1.1.3'
+       implementation 'com.auvious.android:sdk:1.1.4'
    }
    ```
 
