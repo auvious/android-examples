@@ -8,12 +8,15 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.auvious.auviousproject.databinding.ActivityMainBinding
 import com.auvious.auvioussdk.core.AuviousConferenceSDK
 import com.auvious.auvioussdk.ui.simpleconference.AuviousSdkSimpleConferenceError
@@ -48,8 +51,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupWindowInsets()
         setupViews()
         // app-center
         AppCenter.start(
@@ -177,6 +182,22 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.RECORD_AUDIO
         ).all {
             ContextCompat.checkSelfPermission(this, it) == PERMISSION_GRANTED
+        }
+    }
+
+    private fun setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+            view.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                navigationBars.bottom
+            )
+
+            insets
         }
     }
 }
