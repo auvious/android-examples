@@ -23,9 +23,6 @@ import com.auvious.auvioussdk.ui.simpleconference.AuviousSdkSimpleConferenceErro
 import com.auvious.auvioussdk.ui.simpleconference.AuviousSimpleConferenceActivity
 import com.auvious.auvioussdk.ui.simpleconference.AuviousSimpleConferenceOptions
 import com.auvious.auvioussdk.utils.helpers.parcelable
-import com.microsoft.appcenter.AppCenter
-import com.microsoft.appcenter.analytics.Analytics
-import com.microsoft.appcenter.crashes.Crashes
 import kotlin.random.Random
 
 /**
@@ -56,11 +53,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupWindowInsets()
         setupViews()
-        // app-center
-        AppCenter.start(
-            application, "f1c0fdfc-612a-40c1-ab66-8cb5a8cfd722",
-            Analytics::class.java, Crashes::class.java
-        )
     }
 
     private fun setupViews() {
@@ -103,7 +95,10 @@ class MainActivity : AppCompatActivity() {
         availableMicButton: Boolean = true,
         availableCamButton: Boolean = true,
         availableSpeakerButton: Boolean = true,
-        customConferenceBackgroundColor: Boolean = false
+        customConferenceBackgroundColor: Boolean = false,
+        enablePipMenu: Boolean = true,
+        enableScreenShare: Boolean = true,
+        autoEnterPipOnHome: Boolean = true
     ) {
 
         val callOptions = AuviousSimpleConferenceOptions(
@@ -119,7 +114,12 @@ class MainActivity : AppCompatActivity() {
                 AuviousSimpleConferenceOptions.cameraAvailable to availableCamButton.toString(),
                 AuviousSimpleConferenceOptions.microphoneAvailable to availableMicButton.toString(),
                 AuviousSimpleConferenceOptions.speakerAvailable to availableSpeakerButton.toString(),
-                AuviousSimpleConferenceOptions.conferenceBackgroundColor to if (customConferenceBackgroundColor) Color.parseColor("#3366ff").toString() else Color.BLACK.toString()
+                AuviousSimpleConferenceOptions.conferenceBackgroundColor to if (customConferenceBackgroundColor) Color.parseColor("#3366ff").toString() else Color.BLACK.toString(),
+                // Picture-in-Picture options (Android 8.0+)
+                AuviousSimpleConferenceOptions.pipAvailability to enablePipMenu.toString(),
+                AuviousSimpleConferenceOptions.autoEnterPip to autoEnterPipOnHome.toString(),
+                // Screen sharing (Android 5.0+)
+                AuviousSimpleConferenceOptions.screenShareAvailability to enableScreenShare.toString()
             )
         )
         activityForResult.launch(AuviousSimpleConferenceActivity.getIntent(this, callOptions))
