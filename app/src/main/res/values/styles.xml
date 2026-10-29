@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Grouped form on the main screen: a header, a card of rows, and an optional footer per section -->
+    <style name="FormSectionHeader" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:textColor">@color/form_secondary_text</item>
+    </style>
+
+    <style name="FormSectionFooter" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:textColor">@color/form_secondary_text</item>
+    </style>
+
+    <style name="FormCard" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/form_card</item>
+    </style>
+
+    <style name="FormCardContent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:showDividers">middle</item>
+        <item name="android:divider">@drawable/form_divider</item>
+    </style>
+
+    <!-- A row with the title at the start and the switch at the end -->
+    <style name="FormSwitch" parent="Widget.MaterialComponents.CompoundButton.Switch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body1</item>
+    </style>
+
+</resources>

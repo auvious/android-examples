@@ -38,7 +38,7 @@ To use the AuviousSDK in your project, follow these steps:
    dependencies {
        //... other dependencies
        // Auvious SDK
-       implementation 'com.auvious.android:sdk:1.2.1'
+       implementation 'com.auvious.android:sdk:1.3.0-beta01'
    }
    ```
 
@@ -50,6 +50,9 @@ To use the AuviousSDK in your project, follow these steps:
    <!-- Foreground service - required for Google Play policy compliance -->
    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+
+   <!-- Shows the ongoing screen-sharing notification (Android 13+) -->
+   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
    ```
 
    **To disable screen sharing** and avoid the foreground service permissions, set `screenShareAvailability` to `"false"` in your conference options, and you can remove the foreground service permissions from your manifest:
@@ -89,16 +92,17 @@ private fun startSimpleConferenceActivity(
     availableMicButton: Boolean = true,
     availableCamButton: Boolean = true,
     availableSpeakerButton: Boolean = true,
-    customConferenceBackgroundColor: Boolean = false,
-    enablePipMenu: Boolean = true,
-    enableScreenShare: Boolean = true,
-    autoEnterPipOnHome: Boolean = true
+    availablePipButton: Boolean = true,
+    availableScreenShareButton: Boolean = true,
+    allowsEntireScreenShare: Boolean = false,
+    allowsCobrowse: Boolean = false,
+    allowsArPointer: Boolean = true
 ) {
     val callOptions = AuviousSimpleConferenceOptions(
-        "customer",
-        "https://auvious.video",
-        "wss://auvious.video/ws",
-        mapOf(
+        clientId = "customer",
+        baseEndpoint = "https://auvious.video",
+        mqttEndpoint = "wss://auvious.video/ws",
+        params = mapOf(
             "ticket" to binding.ticketText.text.toString(),
             "grant_type" to "password",
             // Media controls - initial state
@@ -109,18 +113,21 @@ private fun startSimpleConferenceActivity(
             AuviousSimpleConferenceOptions.cameraAvailable to availableCamButton.toString(),
             AuviousSimpleConferenceOptions.microphoneAvailable to availableMicButton.toString(),
             AuviousSimpleConferenceOptions.speakerAvailable to availableSpeakerButton.toString(),
-            // UI customization
-            AuviousSimpleConferenceOptions.conferenceBackgroundColor to if (customConferenceBackgroundColor) Color.parseColor("#3366ff").toString() else Color.BLACK.toString(),
-            // Picture-in-Picture options (Android 8.0+)
-            AuviousSimpleConferenceOptions.pipAvailability to enablePipMenu.toString(),
-            AuviousSimpleConferenceOptions.autoEnterPip to autoEnterPipOnHome.toString(),
-            // Screen sharing (Android 5.0+)
-            AuviousSimpleConferenceOptions.screenShareAvailability to enableScreenShare.toString()
+            // Picture-in-Picture (Android 8.0+)
+            AuviousSimpleConferenceOptions.pipAvailability to availablePipButton.toString(),
+            // Screen sharing
+            AuviousSimpleConferenceOptions.screenShareAvailability to availableScreenShareButton.toString(),
+            AuviousSimpleConferenceOptions.allowsEntireScreenShare to allowsEntireScreenShare.toString(),
+            // Co-browse and AR pointer
+            AuviousSimpleConferenceOptions.cobrowseAvailable to allowsCobrowse.toString(),
+            AuviousSimpleConferenceOptions.arPointerAvailable to allowsArPointer.toString()
         )
     )
     activityForResult.launch(AuviousSimpleConferenceActivity.getIntent(this, callOptions))
 }
 ```
+
+The example app ([MainActivity.kt](app/src/main/java/com/auvious/auviousproject/MainActivity.kt)) shows every option, environment selection, and co-browse with masking.
 
 ### Configuration Options Reference
 
@@ -207,19 +214,67 @@ Control screen sharing feature availability (requires Android 5.0 / API 21 or hi
         - `"false"`: Screen sharing feature is completely hidden and disabled.
     - **Note**: When screen sharing starts, the app automatically enters PiP mode for optimal user experience.
 
+- **Entire Screen Share**
+    - **Key**: `AuviousSimpleConferenceOptions.allowsEntireScreenShare` (value: `"allows_entire_screen_share"`)
+    - **Values**: `"true"` or `"false"`
+    - **Default**: `"false"`
+    - **Description**: Allows sharing the entire screen on Android 14+. Shares of another app are always stopped.
+        - `"true"`: The customer may keep sharing the entire screen outside the app.
+        - `"false"`: Only this app may be shared; an entire-screen share stops once the customer leaves the app, and they're asked to share again picking this app.
+
+#### Co-browse and AR Pointer
+
+- **Co-browse in the Call**
+    - **Key**: `AuviousSimpleConferenceOptions.cobrowseAvailable` (value: `"cobrowse_available"`)
+    - **Values**: `"true"` or `"false"`
+    - **Default**: `"false"`
+    - **Description**: Lets the agent co-browse during the call. When the agent asks, the customer shares this app's screen from the call; the call shrinks to picture-in-picture and the agent never sees it. Masking follows `AuviousCobrowse.maskingRules`, and `AuviousCobrowse.inCallListener` tells your app when sharing starts and ends.
+    - **Related keys** (default `"true"`): `cobrowseAnnotationsEnabled` (both sides can draw on the shared screen), `cobrowseShowsMaskHints` (outline masked views for the customer), `cobrowseShowsShareExplainer` (explain what is shared before Android's screen recording prompt).
+
+- **AR Pointer**
+    - **Key**: `AuviousSimpleConferenceOptions.arPointerAvailable` (value: `"ar_pointer_available"`)
+    - **Values**: `"true"` or `"false"`
+    - **Default**: `"true"`
+    - **Description**: Lets the agent point and draw on the customer's camera and on a regular screen share (never on a co-browse screen). The customer sees the points and ink and can annotate back.
+
 #### UI Customization
 
 - **Conference Background Color**
     - **Key**: `AuviousSimpleConferenceOptions.conferenceBackgroundColor` (value: `"conference_background_color"`)
     - **Values**: String representation of an Android Color integer
-    - **Default**: Black (`Color.BLACK`)
+    - **Default**: `#232931`
     - **Description**: Sets a custom background color for the conference screen.
-    - **Example**: `Color.parseColor("#3366ff").toString()` for a custom blue background.
+    - **Example**: `"#3366ff".toColorInt().toString()` for a custom blue background.
 
 - **Participant Name**
     - **Key**: `AuviousSimpleConferenceOptions.participantName` (value: `"participant_name"`)
     - **Values**: String
     - **Description**: Sets a display name for the participant in the conference.
+
+## Co-browse Without a Call
+
+`AuviousCobrowse` shares this app's screen with the agent who created the ticket, without starting a video call. Sensitive views are masked before frames leave the device:
+
+```kotlin
+val configuration = AuviousCobrowseConfiguration(
+    ticket = ticket,
+    baseEndpoint = "https://auvious.video",
+    mqttEndpoint = "wss://auvious.video/ws",
+    masking = AuviousMaskingRules(
+        identifiers = setOf("payment.iban"),            // views tagged with this identifier
+        viewClasses = listOf(CardNumberField::class.java),
+        maskSecureTextFields = true,
+        maskAllTextInputs = false
+    )
+)
+
+AuviousCobrowse.start(this, configuration, object : AuviousCobrowseListener {
+    override fun onCobrowseFailed(error: AuviousCobrowseError) { /* show an error */ }
+    override fun onCobrowseEnded(reason: AuviousCobrowseEndReason) { /* return to your screen */ }
+})
+```
+
+See the [`cobrowse`](app/src/main/java/com/auvious/auviousproject/cobrowse) package for sample screens (Views and Compose) that use masking, including in-call co-browse via `InCallCobrowseDemo`.
 
 ---
 

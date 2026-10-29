@@ -6,4 +6,8 @@
     <color name="colorAccent">#070002</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="form_background">#F2F2F7</color>
+    <color name="form_card">#FFFFFFFF</color>
+    <color name="form_secondary_text">#6C6C70</color>
+    <color name="form_divider">#1F000000</color>
 </resources>

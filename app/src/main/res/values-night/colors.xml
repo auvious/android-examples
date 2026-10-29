@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="form_background">#000000</color>
+    <color name="form_card">#1C1C1E</color>
+    <color name="form_secondary_text">#98989F</color>
+    <color name="form_divider">#33FFFFFF</color>
+</resources>

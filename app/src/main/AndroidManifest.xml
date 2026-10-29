@@ -6,13 +6,15 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <!-- Dangerous permissions - must request at runtime -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-    <!-- Foreground service - required for Google Play policy compliance -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <!-- Shows the ongoing screen-sharing notification -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -33,6 +35,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Co-browse demo screens -->
+        <activity
+            android:name=".cobrowse.SendMoneyActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".cobrowse.ConfirmTransferActivity"
+            android:exported="false" />
+        <activity
+            android:name=".cobrowse.ComposeSendMoneyActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 

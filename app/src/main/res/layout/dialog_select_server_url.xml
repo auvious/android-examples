@@ -1,0 +1,57 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <RadioGroup
+        android:id="@+id/server_options_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radio_prod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Production"
+            android:contentDescription="Production server radio button"
+            android:tag="radioProd" />
+
+        <RadioButton
+            android:id="@+id/radio_staging"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Staging"
+            android:contentDescription="Staging server radio button"
+            android:tag="radioStaging" />
+
+        <RadioButton
+            android:id="@+id/radio_dev"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Development"
+            android:contentDescription="Development server radio button"
+            android:tag="radioDev" />
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/custom_url_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter custom URL"
+        android:visibility="gone"
+        android:contentDescription="Custom URL input field"
+        android:tag="customUrlInput" />
+
+    <Button
+        android:id="@+id/save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:text="Save"
+        android:contentDescription="Save server selection button"
+        android:tag="saveServerButton" />
+</LinearLayout>
