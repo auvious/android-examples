@@ -192,13 +192,35 @@
 
                     <LinearLayout style="@style/FormCardContent">
 
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/mic_only_switch"
-                            style="@style/FormSwitch"
-                            android:checked="false"
-                            android:contentDescription="Microphone only mode toggle"
-                            android:tag="micOnlySwitch"
-                            android:text="Microphone only mode" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:minHeight="52dp">
+
+                            <TextView
+                                android:id="@+id/call_mode_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Call mode"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/call_mode_button"
+                                style="@style/Widget.MaterialComponents.Button.TextButton"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:contentDescription="Call mode selection button"
+                                android:gravity="end|center_vertical"
+                                android:maxLines="1"
+                                android:tag="callModeButton"
+                                android:textAllCaps="false"
+                                app:icon="@drawable/ic_arrow_drop_down"
+                                app:iconGravity="end"
+                                tools:text="Audio + video" />
+
+                        </LinearLayout>
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/speaker_switch"

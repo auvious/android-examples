@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
@@ -33,6 +34,7 @@ import com.auvious.auvioussdk.cobrowse.AuviousCobrowseListener
 import com.auvious.auvioussdk.cobrowse.AuviousMaskingRules
 import com.auvious.auviousproject.databinding.DialogSelectServerUrlBinding
 import com.auvious.auvioussdk.R
+import com.auvious.auvioussdk.ui.simpleconference.AuviousCallMode
 import com.auvious.auvioussdk.ui.simpleconference.AuviousSdkSimpleConferenceError
 import com.auvious.auvioussdk.ui.simpleconference.AuviousSimpleConferenceActivity
 import com.auvious.auvioussdk.ui.simpleconference.AuviousSimpleConferenceOptions
@@ -49,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val SHARED_PREFS_NAME = "sample_app_env_prefs"  // File name
         const val PREF_KEY_ENVIRONMENT = "selected_environment"  // Key for environment preference
+        const val PREF_KEY_CALL_MODE = "selected_call_mode"
     }
 
     private val sharedPrefs by lazy {
@@ -129,6 +132,8 @@ class MainActivity : AppCompatActivity() {
         binding.requestNotificationsPerm.setOnClickListener { checkForNotificationPermission() }
         binding.sdkVersion.text = "SDK v${getString(R.string.version_name)}"
         binding.serverUrlButton.setOnClickListener { showServerDialog() }
+        binding.callModeButton.setOnClickListener { showCallModeDialog() }
+        updateCallMode()
         updateServerUrl()
 
         binding.modeToggle.addOnButtonCheckedListener { _, _, isChecked -> if (isChecked) updateMode() }
@@ -166,7 +171,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 startSimpleConferenceActivity(
                     environment = env,
-                    enableCam = !binding.micOnlySwitch.isChecked,
+                    callMode = callMode,
                     enableEarPieceSpeaker = binding.speakerSwitch.isChecked,
                     availableCamButton = binding.cameraAvailableSwitch.isChecked,
                     availableMicButton = binding.micAvailableSwitch.isChecked,
@@ -185,6 +190,18 @@ class MainActivity : AppCompatActivity() {
 
     private val participantName: String?
         get() = binding.participantNameText.text?.toString()?.trim()?.takeIf { it.isNotEmpty() }
+
+    /** The stream published when joining, picked in the call options */
+    private val callMode: AuviousCallMode
+        get() = AuviousCallMode.entries.firstOrNull { it.name == sharedPrefs.getString(PREF_KEY_CALL_MODE, null) }
+            ?: AuviousCallMode.AUDIO_VIDEO
+
+    private val AuviousCallMode.title: String
+        get() = when (this) {
+            AuviousCallMode.AUDIO -> "Audio"
+            AuviousCallMode.VIDEO -> "Video"
+            AuviousCallMode.AUDIO_VIDEO -> "Audio + video"
+        }
 
     private val isCobrowseMode: Boolean
         get() = binding.modeToggle.checkedButtonId == binding.modeCobrowse.id
@@ -246,8 +263,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startSimpleConferenceActivity(
         environment: AuviousEnvironment = AuviousEnvironment.PRODUCTION,
-        enableMic: Boolean = true,
-        enableCam: Boolean = true,
+        callMode: AuviousCallMode = AuviousCallMode.AUDIO_VIDEO,
         enableEarPieceSpeaker: Boolean = false,
         availableMicButton: Boolean = true,
         availableCamButton: Boolean = true,
@@ -278,8 +294,7 @@ class MainActivity : AppCompatActivity() {
                 "ticket" to binding.ticketText.text.toString(),
                 "grant_type" to "password",
                 AuviousSimpleConferenceOptions.speakerOption to (!enableEarPieceSpeaker).toString(),
-                AuviousSimpleConferenceOptions.microphoneOption to enableMic.toString(),
-                AuviousSimpleConferenceOptions.cameraOption to enableCam.toString(),
+                AuviousSimpleConferenceOptions.callMode to callMode.value,
                 AuviousSimpleConferenceOptions.cameraAvailable to availableCamButton.toString(),
                 AuviousSimpleConferenceOptions.microphoneAvailable to availableMicButton.toString(),
                 AuviousSimpleConferenceOptions.speakerAvailable to availableSpeakerButton.toString(),
@@ -384,21 +399,23 @@ class MainActivity : AppCompatActivity() {
             AlertDialog.Builder(this).setView(binding.root).setTitle("Server Connection URL")
                 .create()
 
-        // Prepopulate the current server URL
-        when (sharedPrefs.getString(PREF_KEY_ENVIRONMENT, AuviousEnvironment.PRODUCTION.name)) {
-            AuviousEnvironment.PRODUCTION.name -> binding.radioProd.isChecked = true
-            AuviousEnvironment.STAGING.name -> binding.radioStaging.isChecked = true
-            AuviousEnvironment.DEVELOPMENT.name -> binding.radioDev.isChecked = true
+        // One radio button per environment, the current one checked
+        val current = AuviousEnvironment.fromName(sharedPrefs.getString(PREF_KEY_ENVIRONMENT, AuviousEnvironment.PRODUCTION.name))
+        AuviousEnvironment.entries.forEach { environment ->
+            val radio = RadioButton(this).apply {
+                id = View.generateViewId()
+                text = "${environment.title} (${environment.baseUrl.removePrefix("https://")})"
+                contentDescription = "${environment.title} server radio button"
+                tag = environment.name
+            }
+            binding.serverOptionsGroup.addView(radio)
+            radio.isChecked = environment == current
         }
 
         // Save the selected server URL
         binding.saveButton.setOnClickListener {
-            val selectedEnvName = when (binding.serverOptionsGroup.checkedRadioButtonId) {
-                binding.radioProd.id -> AuviousEnvironment.PRODUCTION.name
-                binding.radioStaging.id -> AuviousEnvironment.STAGING.name
-                binding.radioDev.id -> AuviousEnvironment.DEVELOPMENT.name
-                else -> AuviousEnvironment.PRODUCTION.name
-            }
+            val checked = binding.serverOptionsGroup.findViewById<RadioButton>(binding.serverOptionsGroup.checkedRadioButtonId)
+            val selectedEnvName = AuviousEnvironment.fromName(checked?.tag as? String).name
 
             // Save the selected environment name in SharedPreferences
             sharedPrefs.edit { putString(PREF_KEY_ENVIRONMENT, selectedEnvName) }
@@ -408,6 +425,22 @@ class MainActivity : AppCompatActivity() {
 
         // Show the dialog
         dialog.show()
+    }
+
+    private fun showCallModeDialog() {
+        val modes = AuviousCallMode.entries
+        AlertDialog.Builder(this)
+            .setTitle("Call mode")
+            .setSingleChoiceItems(modes.map { it.title }.toTypedArray(), modes.indexOf(callMode)) { dialog, which ->
+                sharedPrefs.edit { putString(PREF_KEY_CALL_MODE, modes[which].name) }
+                updateCallMode()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun updateCallMode() {
+        binding.callModeButton.text = callMode.title
     }
 
     private fun updateServerUrl() {

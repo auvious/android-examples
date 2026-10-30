@@ -11,29 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/radio_prod"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Production"
-            android:contentDescription="Production server radio button"
-            android:tag="radioProd" />
-
-        <RadioButton
-            android:id="@+id/radio_staging"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Staging"
-            android:contentDescription="Staging server radio button"
-            android:tag="radioStaging" />
-
-        <RadioButton
-            android:id="@+id/radio_dev"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Development"
-            android:contentDescription="Development server radio button"
-            android:tag="radioDev" />
+        <!-- One radio button per AuviousEnvironment, added by MainActivity -->
 
     </RadioGroup>
 

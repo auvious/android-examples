@@ -38,7 +38,7 @@ To use the AuviousSDK in your project, follow these steps:
    dependencies {
        //... other dependencies
        // Auvious SDK
-       implementation 'com.auvious.android:sdk:1.3.0-beta03'
+       implementation 'com.auvious.android:sdk:1.3.0-beta04'
    }
    ```
 
@@ -86,8 +86,7 @@ To start a conference, use the `AuviousSimpleConferenceActivity` with configurab
 
 ```kotlin
 private fun startSimpleConferenceActivity(
-    enableMic: Boolean = true,
-    enableCam: Boolean = true,
+    callMode: AuviousCallMode = AuviousCallMode.AUDIO_VIDEO,
     enableEarPieceSpeaker: Boolean = false,
     availableMicButton: Boolean = true,
     availableCamButton: Boolean = true,
@@ -107,8 +106,7 @@ private fun startSimpleConferenceActivity(
             "grant_type" to "password",
             // Media controls - initial state
             AuviousSimpleConferenceOptions.speakerOption to (!enableEarPieceSpeaker).toString(),
-            AuviousSimpleConferenceOptions.microphoneOption to enableMic.toString(),
-            AuviousSimpleConferenceOptions.cameraOption to enableCam.toString(),
+            AuviousSimpleConferenceOptions.callMode to callMode.value,
             // Button visibility
             AuviousSimpleConferenceOptions.cameraAvailable to availableCamButton.toString(),
             AuviousSimpleConferenceOptions.microphoneAvailable to availableMicButton.toString(),
@@ -134,17 +132,23 @@ The example app ([MainActivity.kt](app/src/main/java/com/auvious/auviousproject/
 #### Media Controls - Initial State
 Control the initial state of media devices when joining a conference:
 
+- **Call Mode**
+    - **Key**: `AuviousSimpleConferenceOptions.callMode` (value: `"call_mode"`)
+    - **Values**: an `AuviousCallMode` value: `"audio"` (microphone only), `"video"` (camera only) or `"audio_video"`
+    - **Default**: follows the microphone and camera options below, `"audio_video"` when neither is set
+    - **Description**: Sets the stream published when joining. When set, the microphone and camera options are ignored. Opening the missing camera or microphone during the call republishes the stream with both.
+
 - **Microphone Configuration**
     - **Key**: `AuviousSimpleConferenceOptions.microphoneOption` (value: `"mic"`)
     - **Values**: `"true"` or `"false"`
     - **Default**: `"true"`
-    - **Description**: Sets whether the microphone is enabled when joining the conference.
+    - **Description**: Sets whether the microphone is enabled when joining the conference. Ignored when `callMode` is set.
 
 - **Camera Configuration**
     - **Key**: `AuviousSimpleConferenceOptions.cameraOption` (value: `"camera"`)
     - **Values**: `"true"` or `"false"`
     - **Default**: `"true"`
-    - **Description**: Sets whether the camera is enabled when joining the conference.
+    - **Description**: Sets whether the camera is enabled when joining the conference. Ignored when `callMode` is set.
 
 - **Speaker Configuration**
     - **Key**: `AuviousSimpleConferenceOptions.speakerOption` (value: `"speaker"`)
