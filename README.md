@@ -38,7 +38,7 @@ To use the AuviousSDK in your project, follow these steps:
    dependencies {
        //... other dependencies
        // Auvious SDK
-       implementation 'com.auvious.android:sdk:1.3.0-beta06'
+       implementation 'com.auvious.android:sdk:1.3.0'
    }
    ```
 
@@ -278,7 +278,38 @@ AuviousCobrowse.start(this, configuration, object : AuviousCobrowseListener {
 })
 ```
 
+Views can also be marked directly, and Compose content is masked with a modifier (identifiers, classes and the text input defaults only apply to Views):
+
+```kotlin
+cardNumberView.auviousMasked = true                 // always masked; false never masks it
+Text(iban, modifier = Modifier.auviousMasked())     // Jetpack Compose
+
+AuviousCobrowse.maskingRules = rules                // change the rules at any time, also while sharing
+AuviousCobrowse.debugHighlightMasks = true          // fill masked regions red on the device to check your rules
+```
+
+Only one co-browse session runs at a time, and not alongside a video call: to co-browse during a call, use `cobrowseAvailable`. Unless `allowsEntireScreenShare` is set, nothing outside the app reaches the agent.
+
 See the [`cobrowse`](app/src/main/java/com/auvious/auviousproject/cobrowse) package for sample screens (Views and Compose) that use masking, including in-call co-browse via `InCallCobrowseDemo`.
+
+## Network Recovery
+
+When the network drops during a call, the SDK reconnects and recovers the call's streams once the network is back. The host app doesn't need to do anything.
+
+## Remote Error Reporting
+
+The SDK reports errors to Sentry. `AuviousSimpleConferenceOptions` takes:
+
+- `logLevel`: `LogLevel.DISABLED`, `LogLevel.MINIMAL` (crashes only, default) or `LogLevel.FULL`
+- `sentryDsn`: `null` for Auvious's Sentry project (default), your own DSN, or `""` to disable Sentry
+
+Sentry starts with the app, before these options are passed in. To set the DSN from the start, or to keep Sentry off entirely, also add to your `AndroidManifest.xml`:
+
+```xml
+<meta-data
+    android:name="com.auvious.auvioussdk.sentry_dsn"
+    android:value="" />
+```
 
 ---
 
