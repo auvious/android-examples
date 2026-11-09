@@ -38,7 +38,7 @@ To use the AuviousSDK in your project, follow these steps:
    dependencies {
        //... other dependencies
        // Auvious SDK
-       implementation 'com.auvious.android:sdk:1.3.0'
+       implementation 'com.auvious.android:sdk:1.3.1'
    }
    ```
 
@@ -300,15 +300,17 @@ When the network drops during a call, the SDK reconnects and recovers the call's
 
 The SDK reports errors to Sentry. `AuviousSimpleConferenceOptions` takes:
 
-- `logLevel`: `LogLevel.DISABLED`, `LogLevel.MINIMAL` (crashes only, default) or `LogLevel.FULL`
-- `sentryDsn`: `null` for Auvious's Sentry project (default), your own DSN, or `""` to disable Sentry
+- `errorReporting`: `AuviousErrorReporting.Auvious` (Auvious's Sentry project, default), `AuviousErrorReporting.Custom(dsn)` (your own) or `AuviousErrorReporting.Disabled`
+- `logLevel`: `LogLevel.MINIMAL` (crashes only, default) or `LogLevel.FULL`
 
-Sentry starts with the app, before these options are passed in. To set the DSN from the start, or to keep Sentry off entirely, also add to your `AndroidManifest.xml`:
+Only crashes in the SDK's code are reported, not the rest of the app's crashes.
+
+Sentry starts with the app, before these options are passed in. To set where reports go from the start, or to keep Sentry off entirely, also add to your `AndroidManifest.xml` (`auvious`, `disabled`, or your own DSN):
 
 ```xml
 <meta-data
-    android:name="com.auvious.auvioussdk.sentry_dsn"
-    android:value="" />
+    android:name="com.auvious.auvioussdk.error_reporting"
+    android:value="disabled" />
 ```
 
 ---
